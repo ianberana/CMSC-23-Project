@@ -4,27 +4,27 @@
   Description: Sample todo app with Firebase 
 */
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-// import 'todo_page.dart';
-import '../providers/auth_provider.dart';
-import './signin_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'providers/auth_provider.dart';
+import 'pages/authentication/signin.dart';
+import 'pages/organization/org_view.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class Authenticate extends StatefulWidget {
+  const Authenticate({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<Authenticate> createState() => _AuthenticateState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _AuthenticateState extends State<Authenticate> {
   @override
   Widget build(BuildContext context) {
-    Stream<User?> userStream = context.watch<UserAuthProvider>().userStream;
+    Stream<User?> authStream = context.watch<UserAuthProvider>().getAuthStream;
 
     return StreamBuilder(
-        stream: userStream,
+        stream: authStream,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Scaffold(
@@ -42,10 +42,7 @@ class _HomePageState extends State<HomePage> {
             return const SignInPage();
           }
 
-          // if user is logged in, display the scaffold containing the streambuilder for the todos
-          return Container(
-            child: Text("Hello"),
-          );
+          return OrganizationView();
         });
   }
 }

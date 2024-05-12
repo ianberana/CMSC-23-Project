@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class FirebaseTodoAPI {
+class FirebaseUserAPI {
   static final FirebaseFirestore db = FirebaseFirestore.instance;
 
   Future<String> addUser(Map<String, dynamic> user) async {

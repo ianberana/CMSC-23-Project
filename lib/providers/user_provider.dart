@@ -4,12 +4,12 @@ import '../models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserListProvider with ChangeNotifier {
-  late FirebaseTodoAPI firebaseService;
+  late FirebaseUserAPI firebaseService;
   late Stream<QuerySnapshot> userStream;
   User? currentUser;
 
   UserListProvider() {
-    firebaseService = FirebaseTodoAPI();
+    firebaseService = FirebaseUserAPI();
     fetchUsers();
   }
 

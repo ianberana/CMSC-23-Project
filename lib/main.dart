@@ -8,9 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 // import 'package:week9_authentication/providers/user_provider.dart';
 import 'firebase_options.dart';
-import 'pages/home_page.dart';
+import 'authenticate.dart';
 // import 'providers/todo_provider.dart';
 import 'providers/auth_provider.dart';
+import 'providers/org_provider.dart';
 import 'providers/user_provider.dart';
 
 Future<void> main() async {
@@ -24,7 +25,8 @@ Future<void> main() async {
       providers: [
         // ChangeNotifierProvider(create: ((context) => TodoListProvider())),
         ChangeNotifierProvider(create: ((context) => UserAuthProvider())),
-        ChangeNotifierProvider(create: ((context) => UserListProvider()))
+        ChangeNotifierProvider(create: ((context) => UserListProvider())),
+        ChangeNotifierProvider(create: ((context) => OrgListProvider()))
       ],
       child: MyApp(),
     ),
@@ -41,7 +43,7 @@ class MyApp extends StatelessWidget {
       title: 'Elbi Donate',
       initialRoute: '/',
       routes: {
-        '/': (context) => const HomePage(),
+        '/': (context) => const Authenticate(),
       },
       theme: ThemeData(
         primarySwatch: Colors.blue,
