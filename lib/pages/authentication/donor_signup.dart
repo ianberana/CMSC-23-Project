@@ -76,7 +76,7 @@ class _SignUpState extends State<SignUpPage> {
   }
 
   Widget get heading => const Padding(
-        padding: EdgeInsets.only(bottom: 30),
+        padding: EdgeInsets.only(bottom: 15),
         child: Text(
           "Sign Up",
           style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
@@ -84,7 +84,7 @@ class _SignUpState extends State<SignUpPage> {
       );
 
   Widget get nameField => Padding(
-        padding: const EdgeInsets.only(bottom: 30),
+        padding: const EdgeInsets.only(bottom: 15),
         child: TextFormField(
           controller: nameController,
           decoration: const InputDecoration(
@@ -101,7 +101,7 @@ class _SignUpState extends State<SignUpPage> {
         ),
       );
   Widget get addressField => Padding(
-        padding: const EdgeInsets.only(bottom: 30),
+        padding: const EdgeInsets.only(bottom: 15),
         child: TextFormField(
           controller: addressController,
           decoration: const InputDecoration(
@@ -119,7 +119,7 @@ class _SignUpState extends State<SignUpPage> {
       );
 
   Widget get contactField => Padding(
-        padding: const EdgeInsets.only(bottom: 30),
+        padding: const EdgeInsets.only(bottom: 15),
         child: TextFormField(
           controller: contactController,
           decoration: const InputDecoration(
@@ -137,7 +137,7 @@ class _SignUpState extends State<SignUpPage> {
       );
 
   Widget get usernameField => Padding(
-        padding: const EdgeInsets.only(bottom: 30),
+        padding: const EdgeInsets.only(bottom: 15),
         child: TextFormField(
           controller: usernameController,
           decoration: const InputDecoration(
@@ -155,7 +155,7 @@ class _SignUpState extends State<SignUpPage> {
       );
 
   Widget get passwordField => Padding(
-        padding: const EdgeInsets.only(bottom: 30),
+        padding: const EdgeInsets.only(bottom: 15),
         child: TextFormField(
           controller: passwordController,
           decoration: const InputDecoration(
@@ -175,25 +175,34 @@ class _SignUpState extends State<SignUpPage> {
         ),
       );
 
-  Widget get submitButton => ElevatedButton(
-      onPressed: () async {
-        if (_formKey.currentState!.validate()) {
-          _formKey.currentState!.save();
-          User user = User(
-              name: nameController.text,
-              address: addressController.text,
-              contact: contactController.text,
-              username: usernameController.text);
-          await context.read<UserListProvider>().addUser(user);
-
-          await context
-              .read<UserAuthProvider>()
-              .authService
-              .signUp(username!, password!);
-
-          // check if the widget hasn't been disposed of after an asynchronous action
-          if (mounted) Navigator.pop(context);
-        }
-      },
-      child: const Text("Sign Up"));
+  Widget get submitButton => Padding(
+    padding: const EdgeInsets.only(top: 30),
+    child: ElevatedButton(
+        style: ButtonStyle(
+            padding:
+                MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.all(18)),
+            backgroundColor: MaterialStateProperty.all<Color>(
+                Color.fromARGB(255, 172, 225, 175))),
+        onPressed: () async {
+          if (_formKey.currentState!.validate()) {
+            _formKey.currentState!.save();
+            User user = User(
+                name: nameController.text,
+                address: addressController.text,
+                contact: contactController.text,
+                username: usernameController.text);
+            await context.read<UserListProvider>().addUser(user);
+    
+            await context
+                .read<UserAuthProvider>()
+                .authService
+                .signUp(username!, password!);
+    
+            // check if the widget hasn't been disposed of after an asynchronous action
+            if (mounted) Navigator.pop(context);
+          }
+        },
+        child: Text("Sign Up", 
+            style: Theme.of(context).textTheme.displaySmall,)),
+  );
 }
