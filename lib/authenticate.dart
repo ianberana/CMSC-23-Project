@@ -39,7 +39,7 @@ class _AuthenticateState extends State<Authenticate> {
               ),
             );
           } else if (!snapshot.hasData) {
-            return const SignInPage();
+            return SignInPage();
           }
 
           return OrganizationView();

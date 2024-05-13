@@ -6,13 +6,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-// import 'package:week9_authentication/providers/user_provider.dart';
 import 'firebase_options.dart';
-import 'authenticate.dart';
-// import 'providers/todo_provider.dart';
 import 'providers/auth_provider.dart';
 import 'providers/org_provider.dart';
+import 'authenticate.dart';
 import 'providers/user_provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,14 +39,29 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Elbi Donate',
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const Authenticate(),
-      },
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-    );
+        title: 'Elbi Donate',
+        initialRoute: '/',
+        routes: {
+          '/': (context) => Authenticate(),
+        },
+        theme: ThemeData(
+            textTheme: TextTheme(
+          titleLarge: GoogleFonts.inter(
+            fontSize: 35,
+            fontWeight: FontWeight.w600,
+          ).copyWith(color: Colors.black),
+          titleSmall: GoogleFonts.inter(
+            fontSize: 18,
+            // fontWeight: FontWeight.w500,
+          ).copyWith(color: Color.fromARGB(255, 172, 225, 175)),
+          displaySmall: GoogleFonts.inter(
+            fontSize: 18,
+            fontWeight: FontWeight.w500,
+          ).copyWith(color: Colors.white),
+          labelSmall: GoogleFonts.inter(
+            fontSize: 18,
+            fontWeight: FontWeight.w500,
+          ).copyWith(color: Colors.grey[400]),
+        )));
   }
 }
