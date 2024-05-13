@@ -1,4 +1,7 @@
+import 'package:elbi_donate/pages/authentication/signin.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/user_provider.dart';
@@ -18,6 +21,8 @@ class _SignUpState extends State<SignUpPage> {
   String? contact;
   String? username;
   String? password;
+
+  int _selectedPage = 0;
 
   TextEditingController nameController = TextEditingController();
   TextEditingController addressController = TextEditingController();
@@ -52,7 +57,27 @@ class _SignUpState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        toolbarHeight: 80,
+        title: Text(
+          "Sign Up",
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        centerTitle: true,
+        actions: [
+          TextButton(
+              child: Text(
+                "Login",
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const SignInPage()));
+              })
+        ],
+      ),
       body: SingleChildScrollView(
         child: Container(
             margin: const EdgeInsets.all(30),
@@ -60,6 +85,7 @@ class _SignUpState extends State<SignUpPage> {
               key: _formKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   heading,
                   nameField,
@@ -67,7 +93,7 @@ class _SignUpState extends State<SignUpPage> {
                   contactField,
                   usernameField,
                   passwordField,
-                  submitButton
+                  submitButton,
                 ],
               ),
             )),
@@ -75,11 +101,51 @@ class _SignUpState extends State<SignUpPage> {
     );
   }
 
-  Widget get heading => const Padding(
-        padding: EdgeInsets.only(bottom: 15),
-        child: Text(
-          "Sign Up",
-          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+  Widget get heading => Padding(
+        padding: EdgeInsets.only(bottom: 30),
+        child: Row(
+          children: [
+            Expanded(
+              child: RadioListTile<int>(
+                contentPadding: EdgeInsets.zero,
+                title: Text(
+                  'Donor',
+                  style: TextStyle(
+                    // Add your text style here
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                value: 0,
+                groupValue: _selectedPage,
+                onChanged: (value) {
+                  setState(() {
+                    _selectedPage = value!;
+                  });
+                },
+              ),
+            ),
+            Expanded(
+              child: RadioListTile<int>(
+                contentPadding: EdgeInsets.zero,
+                title: Text(
+                  'Organization',
+                  style: TextStyle(
+                    // Add your text style here
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                value: 1,
+                groupValue: _selectedPage,
+                onChanged: (value) {
+                  setState(() {
+                    _selectedPage = value!;
+                  });
+                },
+              ),
+            ),
+          ],
         ),
       );
 
@@ -176,33 +242,35 @@ class _SignUpState extends State<SignUpPage> {
       );
 
   Widget get submitButton => Padding(
-    padding: const EdgeInsets.only(top: 30),
-    child: ElevatedButton(
-        style: ButtonStyle(
-            padding:
-                MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.all(18)),
-            backgroundColor: MaterialStateProperty.all<Color>(
-                Color.fromARGB(255, 172, 225, 175))),
-        onPressed: () async {
-          if (_formKey.currentState!.validate()) {
-            _formKey.currentState!.save();
-            User user = User(
-                name: nameController.text,
-                address: addressController.text,
-                contact: contactController.text,
-                username: usernameController.text);
-            await context.read<UserListProvider>().addUser(user);
-    
-            await context
-                .read<UserAuthProvider>()
-                .authService
-                .signUp(username!, password!);
-    
-            // check if the widget hasn't been disposed of after an asynchronous action
-            if (mounted) Navigator.pop(context);
-          }
-        },
-        child: Text("Sign Up", 
-            style: Theme.of(context).textTheme.displaySmall,)),
-  );
+        padding: const EdgeInsets.only(top: 30),
+        child: ElevatedButton(
+            style: ButtonStyle(
+                padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                    EdgeInsets.all(18)),
+                backgroundColor: MaterialStateProperty.all<Color>(
+                    Color.fromARGB(255, 172, 225, 175))),
+            onPressed: () async {
+              if (_formKey.currentState!.validate()) {
+                _formKey.currentState!.save();
+                User user = User(
+                    name: nameController.text,
+                    address: addressController.text,
+                    contact: contactController.text,
+                    username: usernameController.text);
+                await context.read<UserListProvider>().addUser(user);
+
+                await context
+                    .read<UserAuthProvider>()
+                    .authService
+                    .signUp(username!, password!);
+
+                // check if the widget hasn't been disposed of after an asynchronous action
+                if (mounted) Navigator.pop(context);
+              }
+            },
+            child: Text(
+              "Sign Up",
+              style: Theme.of(context).textTheme.displaySmall,
+            )),
+      );
 }
