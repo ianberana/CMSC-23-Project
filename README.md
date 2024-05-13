@@ -1,16 +1,27 @@
-# elbi_donate
+# CMSC 23 Project: Elbi Donation System
 
-A new Flutter project.
+**Name:** Alarcon, Berana, Palma <br/>
+**Section:** U-1L <br/>
+<!-- **Student number:** 2022 - 08582 <br/> -->
 
-## Getting Started
+## Code Description
 
-This project is a starting point for a Flutter application.
+Elbi Donation App
 
-A few resources to get you started if this is your first Flutter project:
+## Things you did in the code
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- User Authentication
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+<!-- ## Challenges encountered
+
+- Validating email and password -->
+
+## Commit Log
+
+1. Initial commit
+2. Added initial backend
+3. Added layout and design for login page
+
+## References
+
+- google fonts - https://pub.dev/packages/google_fonts
