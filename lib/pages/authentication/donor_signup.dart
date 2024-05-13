@@ -1,3 +1,4 @@
+import 'package:elbi_donate/pages/authentication/organization_signup.dart';
 import 'package:elbi_donate/pages/authentication/signin.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -121,6 +122,12 @@ class _SignUpState extends State<SignUpPage> {
                 onChanged: (value) {
                   setState(() {
                     _selectedPage = value!;
+                    // TENTATIVE
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const SignUpPage()));
+             
                   });
                 },
               ),
@@ -141,7 +148,14 @@ class _SignUpState extends State<SignUpPage> {
                 onChanged: (value) {
                   setState(() {
                     _selectedPage = value!;
+                    // TENTATIVE
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                const OrgSignUpPage()));
                   });
+
                 },
               ),
             ),
