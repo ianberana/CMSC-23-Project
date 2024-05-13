@@ -122,7 +122,6 @@ class _SignUpState extends State<SignUpPage> {
                 onChanged: (value) {
                   setState(() {
                     _selectedPage = value!;
-                    // TENTATIVE
                     Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -148,7 +147,7 @@ class _SignUpState extends State<SignUpPage> {
                 onChanged: (value) {
                   setState(() {
                     _selectedPage = value!;
-                    // TENTATIVE
+                    Navigator.pop(context);
                     Navigator.push(
                         context,
                         MaterialPageRoute(
