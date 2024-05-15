@@ -4,9 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
-import '../../providers/auth_provider.dart';
-import '../../providers/user_provider.dart';
-import '../../models/user_model.dart';
 
 class OrgSignUpPage extends StatefulWidget {
   const OrgSignUpPage({super.key});
@@ -161,6 +158,24 @@ class _OrgSignUpState extends State<OrgSignUpPage> {
           decoration: const InputDecoration(
               border: OutlineInputBorder(),
               label: Text("Name"),
+              hintText: "Ex. UPLB Web Development Society"),
+          onSaved: (value) => setState(() => name = value),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "Please enter your first name";
+            }
+            return null;
+          },
+        ),
+      );
+
+   Widget get addressField => Padding(
+        padding: const EdgeInsets.only(bottom: 15),
+        child: TextFormField(
+          controller: nameController,
+          decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              label: Text("Address"),
               hintText: "Ex. UPLB Web Development Society"),
           onSaved: (value) => setState(() => name = value),
           validator: (value) {
