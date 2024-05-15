@@ -291,7 +291,7 @@ class _SignUpState extends State<SignUpPage> {
         padding: const EdgeInsets.only(bottom: 15),
         child: CheckboxListTile(
           title: Text(
-            "Register as Organization",
+            "Sign Up as an Organization",
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
