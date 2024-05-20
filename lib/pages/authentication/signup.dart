@@ -1,13 +1,14 @@
-//import 'package:elbi_donate/pages/authentication/organization_signup.dart';
-import 'package:elbi_donate/pages/authentication/signin.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/type_provider.dart';
 import '../../providers/user_provider.dart';
 import '../../models/user_model.dart';
+import '../../models/type_model.dart';
+import 'signin.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -35,7 +36,8 @@ class _SignUpState extends State<SignUpPage> {
   TextEditingController proofController = TextEditingController();
 
   bool validatePassword(String value) {
-    RegExp regex = RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{6,}$');
+    RegExp regex =
+        RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{6,}$');
     if (value.isEmpty || !regex.hasMatch(value)) {
       return false;
     } else {
@@ -331,8 +333,10 @@ class _SignUpState extends State<SignUpPage> {
         padding: const EdgeInsets.only(top: 30),
         child: ElevatedButton(
             style: ButtonStyle(
-                padding: WidgetStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.all(18)),
-                backgroundColor: WidgetStateProperty.all<Color>(Color.fromARGB(255, 52, 199, 59))),
+                padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                    EdgeInsets.all(18)),
+                backgroundColor: MaterialStateProperty.all<Color>(
+                    Color.fromARGB(255, 52, 199, 59))),
             onPressed: () async {
               if (_formKey.currentState!.validate()) {
                 _formKey.currentState!.save();
@@ -342,6 +346,11 @@ class _SignUpState extends State<SignUpPage> {
                     contact: contactController.text,
                     username: usernameController.text);
                 await context.read<UserListProvider>().addUser(user);
+
+                Type type = Type(
+                    username: usernameController.text,
+                    usertype: isOrganization ? "organization" : "user");
+                await context.read<UserTypeProvider>().addUserType(type);
 
                 await context
                     .read<UserAuthProvider>()
