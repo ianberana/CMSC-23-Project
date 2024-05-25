@@ -3,23 +3,17 @@ import '../api/firebase_user_api.dart';
 import '../models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class UserListProvider with ChangeNotifier {
+class UserProvider with ChangeNotifier {
   late FirebaseUserAPI firebaseService;
   late Stream<QuerySnapshot> userStream;
-  User? currentUser;
 
-  UserListProvider() {
+  UserProvider() {
     firebaseService = FirebaseUserAPI();
     fetchUsers();
   }
 
   // getter
-  Stream<QuerySnapshot> get getUser => userStream;
-  User get current => currentUser!;
-
-  changeCurrentUser(User user) {
-    currentUser = user;
-  }
+  Stream<QuerySnapshot> get getUserTypes => userStream;
 
   void fetchUsers() {
     userStream = firebaseService.getAllUsers();

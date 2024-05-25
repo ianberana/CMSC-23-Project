@@ -9,8 +9,8 @@ import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'providers/auth_provider.dart';
 import 'providers/org_provider.dart';
-import 'providers/type_provider.dart';
 import 'providers/user_provider.dart';
+import 'providers/donor_provider.dart';
 import 'pages/authentication/authenticate.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -24,8 +24,8 @@ Future<void> main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: ((context) => UserAuthProvider())),
-        ChangeNotifierProvider(create: ((context) => UserTypeProvider())),
-        ChangeNotifierProvider(create: ((context) => UserListProvider())),
+        ChangeNotifierProvider(create: ((context) => UserProvider())),
+        ChangeNotifierProvider(create: ((context) => DonorListProvider())),
         ChangeNotifierProvider(create: ((context) => OrgListProvider()))
       ],
       child: MyApp(),

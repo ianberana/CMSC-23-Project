@@ -5,11 +5,11 @@ import 'package:file_picker/file_picker.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/org_provider.dart';
-import '../../providers/type_provider.dart';
 import '../../providers/user_provider.dart';
-import '../../models/user_model.dart';
+import '../../providers/donor_provider.dart';
+import '../../models/donor_model.dart';
 import '../../models/org_model.dart';
-import '../../models/type_model.dart';
+import '../../models/user_model.dart';
 import 'signin.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -24,7 +24,7 @@ class _SignUpState extends State<SignUpPage> {
   String? name;
   String? address;
   String? contact;
-  String? username;
+  String? email;
   String? password;
   PlatformFile? proofOfLegitimacyFile;
 
@@ -33,7 +33,7 @@ class _SignUpState extends State<SignUpPage> {
   TextEditingController nameController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   TextEditingController contactController = TextEditingController();
-  TextEditingController usernameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController proofController = TextEditingController();
 
@@ -96,7 +96,7 @@ class _SignUpState extends State<SignUpPage> {
                   nameField,
                   addressField,
                   contactField,
-                  usernameField,
+                  emailField,
                   passwordField,
                   organizationCheckbox,
                   if (isOrganization) proofOfLegitimacyField,
@@ -216,10 +216,10 @@ class _SignUpState extends State<SignUpPage> {
         ),
       );
 
-  Widget get usernameField => Padding(
+  Widget get emailField => Padding(
         padding: const EdgeInsets.only(bottom: 15),
         child: TextFormField(
-          controller: usernameController,
+          controller: emailController,
           cursorColor: Colors.grey,
           decoration: InputDecoration(
               contentPadding: EdgeInsets.all(20),
@@ -239,13 +239,13 @@ class _SignUpState extends State<SignUpPage> {
               ),
               filled: true,
               fillColor: Colors.grey[100],
-              label: Text("Username"),
+              label: Text("Email"),
               labelStyle: Theme.of(context).textTheme.labelSmall,
-              hintText: "Enter your username"),
-          onSaved: (value) => setState(() => username = value),
+              hintText: "Enter your email"),
+          onSaved: (value) => setState(() => email = value),
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return "Please enter your username";
+              return "Please enter your email";
             }
             return null;
           },
@@ -348,26 +348,26 @@ class _SignUpState extends State<SignUpPage> {
                       name: nameController.text,
                       address: addressController.text,
                       contact: contactController.text,
-                      username: usernameController.text);
+                      email: emailController.text);
                   await context.read<OrgListProvider>().addOrganization(org);
                 } else {
-                  User user = User(
+                  Donor donor = Donor(
                       name: nameController.text,
                       address: addressController.text,
                       contact: contactController.text,
-                      username: usernameController.text);
-                  await context.read<UserListProvider>().addUser(user);
+                      email: emailController.text);
+                  await context.read<DonorListProvider>().addDonor(donor);
                 }
 
-                Type type = Type(
-                    username: usernameController.text,
-                    usertype: isOrganization ? "organization" : "user");
-                await context.read<UserTypeProvider>().addUserType(type);
+                User user = User(
+                    email: emailController.text,
+                    type: isOrganization ? "organization" : "user");
+                await context.read<UserProvider>().addUser(user);
 
                 await context
                     .read<UserAuthProvider>()
                     .authService
-                    .signUp(username!, password!);
+                    .signUp(email!, password!);
 
                 // check if the widget hasn't been disposed of after an asynchronous action
                 if (mounted) Navigator.pop(context);
