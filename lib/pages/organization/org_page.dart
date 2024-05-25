@@ -2,23 +2,23 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
-import 'donor_profile.dart';
+import 'org_profile.dart';
 
-class DonorPage extends StatefulWidget {
-  const DonorPage({super.key});
+class OrganizationPage extends StatefulWidget {
+  const OrganizationPage({super.key});
 
   @override
-  State<DonorPage> createState() => _DonorPageState();
+  State<OrganizationPage> createState() => _OrganizationPageState();
 }
 
-class _DonorPageState extends State<DonorPage> {
+class _OrganizationPageState extends State<OrganizationPage> {
   @override
   Widget build(BuildContext context) {
     // Stream<QuerySnapshot> todosStream = context.watch<TodoListProvider>().todo;
     return Scaffold(
         drawer: drawer,
         appBar: AppBar(
-          title: const Text("Donors Page"),
+          title: const Text("Organization Page"),
         ),
         body: Container()
         // StreamBuilder(
@@ -122,8 +122,10 @@ class _DonorPageState extends State<DonorPage> {
         ListTile(
           title: const Text('Details'),
           onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const DonorProfile()));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const OrganizationProfile()));
           },
         ),
         ListTile(

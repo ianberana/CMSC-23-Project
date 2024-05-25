@@ -7,9 +7,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'providers/auth_provider.dart';
-import 'pages/authentication/signin.dart';
-import 'pages/organization/org_view.dart';
+import '../../providers/auth_provider.dart';
+import 'signin.dart';
+import 'usertype.dart';
 
 class Authenticate extends StatefulWidget {
   const Authenticate({super.key});
@@ -42,7 +42,7 @@ class _AuthenticateState extends State<Authenticate> {
             return SignInPage();
           }
 
-          return OrganizationView();
+          return UserType();
         });
   }
 }
