@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../providers/auth_provider.dart';
-import '../../providers/type_provider.dart';
+import '../../providers/user_provider.dart';
 import '../admin/admin_page.dart';
 import '../donor/donor_page.dart';
 import '../organization/org_page.dart';
@@ -24,11 +24,11 @@ class UserType extends StatefulWidget {
 class _UserTypeState extends State<UserType> {
   @override
   Widget build(BuildContext context) {
-    Stream<QuerySnapshot> typeStream =
-        context.read<UserTypeProvider>().getUserTypes;
+    Stream<QuerySnapshot> userStream =
+        context.read<UserProvider>().getUserTypes;
 
     return StreamBuilder(
-        stream: typeStream,
+        stream: userStream,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Scaffold(

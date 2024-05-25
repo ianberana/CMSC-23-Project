@@ -1,13 +1,13 @@
 import 'dart:convert';
 
-class Organization {
+class Donor {
   String? id;
   String name;
   String address;
   String contact;
   String email;
 
-  Organization({
+  Donor({
     this.id,
     required this.name,
     required this.address,
@@ -16,8 +16,8 @@ class Organization {
   });
 
   // Factory constructor to instantiate object from json format
-  factory Organization.fromJson(Map<String, dynamic> json) {
-    return Organization(
+  factory Donor.fromJson(Map<String, dynamic> json) {
+    return Donor(
       id: json['id'],
       name: json['name'],
       address: json['address'],
@@ -26,19 +26,17 @@ class Organization {
     );
   }
 
-  static List<Organization> fromJsonArray(String jsonData) {
+  static List<Donor> fromJsonArray(String jsonData) {
     final Iterable<dynamic> data = jsonDecode(jsonData);
-    return data
-        .map<Organization>((dynamic d) => Organization.fromJson(d))
-        .toList();
+    return data.map<Donor>((dynamic d) => Donor.fromJson(d)).toList();
   }
 
-  Map<String, dynamic> toJson(Organization org) {
+  Map<String, dynamic> toJson(Donor donor) {
     return {
-      'name': org.name,
-      'address': org.address,
-      'contact': org.contact,
-      'email': org.email,
+      'name': donor.name,
+      'address': donor.address,
+      'contact': donor.contact,
+      'email': donor.email,
     };
   }
 }
