@@ -4,9 +4,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/org_provider.dart';
 import '../../providers/type_provider.dart';
 import '../../providers/user_provider.dart';
 import '../../models/user_model.dart';
+import '../../models/org_model.dart';
 import '../../models/type_model.dart';
 import 'signin.dart';
 
@@ -340,12 +342,22 @@ class _SignUpState extends State<SignUpPage> {
             onPressed: () async {
               if (_formKey.currentState!.validate()) {
                 _formKey.currentState!.save();
-                User user = User(
-                    name: nameController.text,
-                    address: addressController.text,
-                    contact: contactController.text,
-                    username: usernameController.text);
-                await context.read<UserListProvider>().addUser(user);
+
+                if (isOrganization) {
+                  Organization org = Organization(
+                      name: nameController.text,
+                      address: addressController.text,
+                      contact: contactController.text,
+                      username: usernameController.text);
+                  await context.read<OrgListProvider>().addOrganization(org);
+                } else {
+                  User user = User(
+                      name: nameController.text,
+                      address: addressController.text,
+                      contact: contactController.text,
+                      username: usernameController.text);
+                  await context.read<UserListProvider>().addUser(user);
+                }
 
                 Type type = Type(
                     username: usernameController.text,
