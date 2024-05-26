@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:file_picker/file_picker.dart';
 
 class Organization {
   String? id;
@@ -6,6 +7,8 @@ class Organization {
   String address;
   String contact;
   String email;
+  String? proof;
+  bool approved;
 
   Organization({
     this.id,
@@ -13,6 +16,8 @@ class Organization {
     required this.address,
     required this.contact,
     required this.email,
+    this.proof,
+    this.approved = false,
   });
 
   // Factory constructor to instantiate object from json format
@@ -23,6 +28,8 @@ class Organization {
       address: json['address'],
       contact: json['contact'],
       email: json['email'],
+      proof: json['proof'],
+      approved: json['approved'],
     );
   }
 
@@ -39,6 +46,8 @@ class Organization {
       'address': org.address,
       'contact': org.contact,
       'email': org.email,
+      'proof': org.proof,
+      'approved': org.approved
     };
   }
 }

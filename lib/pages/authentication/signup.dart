@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:elbi_donate/providers/proof_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -340,7 +343,8 @@ class _SignUpState extends State<SignUpPage> {
                 backgroundColor: MaterialStateProperty.all<Color>(
                     Color.fromARGB(255, 52, 199, 59))),
             onPressed: () async {
-              if (_formKey.currentState!.validate()) {
+              if (_formKey.currentState!.validate() &&
+                  proofOfLegitimacyFile != null) {
                 _formKey.currentState!.save();
 
                 if (isOrganization) {
@@ -348,8 +352,16 @@ class _SignUpState extends State<SignUpPage> {
                       name: nameController.text,
                       address: addressController.text,
                       contact: contactController.text,
-                      email: emailController.text);
-                  await context.read<OrgListProvider>().addOrganization(org);
+                      email: emailController.text,
+                      proof: proofOfLegitimacyFile!.path!);
+
+                  String id = await context
+                      .read<OrgListProvider>()
+                      .addOrganization(org);
+                  String url = await context
+                      .read<ProofProvider>()
+                      .uploadProof(proofOfLegitimacyFile!, id);
+                  await context.read<OrgListProvider>().addProof(id, url);
                 } else {
                   Donor donor = Donor(
                       name: nameController.text,

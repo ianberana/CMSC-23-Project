@@ -26,8 +26,14 @@ class OrgListProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addOrganization(Organization org) async {
+  Future<String> addOrganization(Organization org) async {
     String message = await firebaseService.addOrganization(org.toJson(org));
+    notifyListeners();
+    return message;
+  }
+
+  Future<void> addProof(String id, String url) async {
+    String message = await firebaseService.addProof(id, url);
     print(message);
     notifyListeners();
   }
