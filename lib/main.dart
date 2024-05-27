@@ -11,7 +11,6 @@ import 'firebase_options.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'providers/auth_provider.dart';
 import 'providers/org_provider.dart';
-import 'providers/proof_provider.dart';
 import 'providers/user_provider.dart';
 import 'providers/donor_provider.dart';
 import 'providers/donation_provider.dart';
@@ -30,7 +29,6 @@ Future<void> main() async {
         ChangeNotifierProvider(create: ((context) => UserProvider())),
         ChangeNotifierProvider(create: ((context) => DonorListProvider())),
         ChangeNotifierProvider(create: ((context) => OrgListProvider())),
-        ChangeNotifierProvider(create: ((context) => ProofProvider())),
         ChangeNotifierProvider(create: ((context) => DonationListProvider())),
       ],
       child: MyApp(),

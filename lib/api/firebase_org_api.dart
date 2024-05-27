@@ -1,24 +1,29 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class FirebaseOrgAPI {
   static final FirebaseFirestore db = FirebaseFirestore.instance;
+  static final FirebaseStorage storage = FirebaseStorage.instance;
 
-  Future<String> addOrganization(Map<String, dynamic> org) async {
+  Future<String> addOrganization(
+      Map<String, dynamic> org, PlatformFile proof) async {
     try {
-      final docRef = await db.collection("orgs").add(org);
-      await db.collection("orgs").doc(docRef.id).update({'id': docRef.id});
+      final orgRef = await db.collection("orgs").add(org);
+      await db.collection("orgs").doc(orgRef.id).update({'id': orgRef.id});
 
-      return docRef.id;
-    } on FirebaseException catch (e) {
-      return "Failed with error '${e.code}: ${e.message}";
-    }
-  }
+      final file = File(proof.path!);
+      final proofRef = await storage.ref().child("organization/${orgRef.id}");
 
-  Future<String> addProof(String id, String url) async {
-    try {
-      await db.collection("orgs").doc(id).update({'proof': url});
+      UploadTask upload = proofRef.putFile(file);
+      final snapshot = await upload.whenComplete(() {});
 
-      return "Successfully linked proof of legitimacy";
+      String url = await snapshot.ref.getDownloadURL();
+      await db.collection("orgs").doc(orgRef.id).update({'proof': url});
+
+      return "Successfully added organization";
     } on FirebaseException catch (e) {
       return "Failed with error '${e.code}: ${e.message}";
     }

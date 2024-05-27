@@ -1,6 +1,4 @@
 import 'dart:io';
-
-import 'package:elbi_donate/providers/proof_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -355,13 +353,13 @@ class _SignUpState extends State<SignUpPage> {
                       email: emailController.text,
                       proof: proofOfLegitimacyFile!.path!);
 
-                  String id = await context
+                  await context
                       .read<OrgListProvider>()
-                      .addOrganization(org);
-                  String url = await context
-                      .read<ProofProvider>()
-                      .uploadProof(proofOfLegitimacyFile!, id);
-                  await context.read<OrgListProvider>().addProof(id, url);
+                      .addOrganization(org, proofOfLegitimacyFile!);
+                  // String url = await context
+                  //     .read<ProofProvider>()
+                  //     .uploadProof(proofOfLegitimacyFile!, id);
+                  // await context.read<OrgListProvider>().addProof(id, url);
                 } else {
                   Donor donor = Donor(
                       name: nameController.text,
