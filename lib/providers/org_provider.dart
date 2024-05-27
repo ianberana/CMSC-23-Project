@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
 import '../api/firebase_org_api.dart';
 import '../models/org_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -26,14 +27,9 @@ class OrgListProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<String> addOrganization(Organization org) async {
-    String message = await firebaseService.addOrganization(org.toJson(org));
-    notifyListeners();
-    return message;
-  }
-
-  Future<void> addProof(String id, String url) async {
-    String message = await firebaseService.addProof(id, url);
+  Future<void> addOrganization(Organization org, PlatformFile proof) async {
+    String message =
+        await firebaseService.addOrganization(org.toJson(org), proof);
     print(message);
     notifyListeners();
   }
