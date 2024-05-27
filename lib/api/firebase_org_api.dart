@@ -8,6 +8,10 @@ class FirebaseOrgAPI {
   static final FirebaseFirestore db = FirebaseFirestore.instance;
   static final FirebaseStorage storage = FirebaseStorage.instance;
 
+  Stream<QuerySnapshot> getAllOrganizations() {
+    return db.collection("orgs").snapshots();
+  }
+
   Future<String> addOrganization(
       Map<String, dynamic> org, PlatformFile proof) async {
     try {
@@ -27,9 +31,5 @@ class FirebaseOrgAPI {
     } on FirebaseException catch (e) {
       return "Failed with error '${e.code}: ${e.message}";
     }
-  }
-
-  Stream<QuerySnapshot> getAllOrganizations() {
-    return db.collection("orgs").snapshots();
   }
 }

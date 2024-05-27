@@ -347,6 +347,7 @@ class _SignUpState extends State<SignUpPage> {
 
                 if (isOrganization) {
                   Organization org = Organization(
+                      dateCreated: DateTime.now(),
                       name: nameController.text,
                       address: addressController.text,
                       contact: contactController.text,

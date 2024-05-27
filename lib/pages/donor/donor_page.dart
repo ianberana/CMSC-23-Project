@@ -121,10 +121,11 @@ class _DonorPageState extends State<DonorPage> {
           File? photo = await pickImageFromGallery();
 
           Donation donation = Donation(
+            dateCreated: DateTime.now(),
             item: "food",
             delivery: "pickup",
             weight: 20,
-            date: DateTime.now(),
+            dateDelivery: DateTime.now(),
             address: ["Los Banos, Laguna"],
             contact: "09123456789",
             donorId: "VLYloaQO4QwZS8Ve0ouE",

@@ -4,11 +4,12 @@ import 'package:qr_flutter/qr_flutter.dart';
 
 class Donation {
   String? id;
+  DateTime dateCreated;
   String item;
   String delivery;
   double weight;
   String? photo;
-  DateTime date;
+  DateTime dateDelivery;
   List address;
   String? contact;
   String status;
@@ -19,11 +20,12 @@ class Donation {
 
   Donation({
     this.id,
+    required this.dateCreated,
     required this.item,
     required this.delivery,
     required this.weight,
     this.photo,
-    required this.date,
+    required this.dateDelivery,
     required this.address,
     this.contact,
     this.status = "pending",
@@ -37,11 +39,12 @@ class Donation {
   factory Donation.fromJson(Map<String, dynamic> json) {
     return Donation(
         id: json['id'],
+        dateCreated: json['dateCreated'],
         item: json['item'],
         delivery: json['delivery'],
         weight: json['weight'],
         photo: json['photo'],
-        date: json['date'],
+        dateDelivery: json['dateDelivery'],
         address: json['address'],
         status: json['status'],
         qr: json['qr'],
@@ -57,11 +60,12 @@ class Donation {
 
   Map<String, dynamic> toJson(Donation donation) {
     return {
+      'dateCreated': donation.dateCreated,
       'item': donation.item,
       'delivery': donation.delivery,
       'weight': donation.weight,
       'photo': donation.photo,
-      'date': donation.date,
+      'dateDelivery': donation.dateDelivery,
       'address': donation.address,
       'status': donation.status,
       'qr': donation.qr,

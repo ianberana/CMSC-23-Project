@@ -3,6 +3,7 @@ import 'package:file_picker/file_picker.dart';
 
 class Organization {
   String? id;
+  DateTime dateCreated;
   String name;
   String address;
   String contact;
@@ -12,6 +13,7 @@ class Organization {
 
   Organization({
     this.id,
+    required this.dateCreated,
     required this.name,
     required this.address,
     required this.contact,
@@ -24,6 +26,7 @@ class Organization {
   factory Organization.fromJson(Map<String, dynamic> json) {
     return Organization(
       id: json['id'],
+      dateCreated: json['dateCreated'],
       name: json['name'],
       address: json['address'],
       contact: json['contact'],
@@ -42,6 +45,7 @@ class Organization {
 
   Map<String, dynamic> toJson(Organization org) {
     return {
+      'dateCreated': org.dateCreated,
       'name': org.name,
       'address': org.address,
       'contact': org.contact,

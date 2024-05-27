@@ -31,4 +31,16 @@ class DriveListProvider with ChangeNotifier {
     print(message);
     notifyListeners();
   }
+
+  Future<void> editDrive(Drive drive, String id) async {
+    String message = await firebaseService.editDrive(drive, id);
+    print(message);
+    notifyListeners();
+  }
+
+  Future<void> deleteDrive(String id) async {
+    String message = await firebaseService.deleteDrive(id);
+    print(message);
+    notifyListeners();
+  }
 }

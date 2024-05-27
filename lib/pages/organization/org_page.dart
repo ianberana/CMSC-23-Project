@@ -117,25 +117,41 @@ class _OrganizationPageState extends State<OrganizationPage> {
           //   ),
           // );
 
-          // Add static donation drive
+          // CREATE static donation drive
           // Drive drive = Drive(
-          //     name: "Typhoon Aghon Relief Care",
-          //     description: "Help Typhoon Aghon victims to satnd up again.",
+          //     dateCreated: DateTime.now(),
+          //     name: "UPLB Mental Health Care",
+          //     description: "Help struggling students find the joy in studying",
           //     contact: "09090909090",
           //     email: "legacy@gmail.com",
           //     orgId: "GCGt6AMZLTHbzlWdWXse");
           // await context.read<DriveListProvider>().addDrive(drive);
 
-          // Update static status
+          // UPDATE static status
+          // await context
+          //     .read<DonationListProvider>()
+          //     .updateStatus("rXoXxDLGvSofgG1IRlH4", "completed");
+
+          // // Link Donation to Donation Drive
+          // File? photo = await pickImageFromGallery();
+
+          // await context.read<DonationListProvider>().linkDrive(
+          //     "rXoXxDLGvSofgG1IRlH4", "X8SHToo4sH9pJSLkL3AG", photo!);
+
+          // UPDATE static donation drive
+          // Drive drive = Drive(
+          //     name: "Typhoon Aghon Relief Care",
+          //     description: "Help Typhoon Aghon victims to stand up again.",
+          //     contact: "09000000000",
+          //     email: "legacy@gmail.com");
+          // await context
+          //     .read<DriveListProvider>()
+          //     .editDrive(drive, "X8SHToo4sH9pJSLkL3AG");
+
+          // DELETE static donation drive
           await context
-              .read<DonationListProvider>()
-              .updateStatus("rXoXxDLGvSofgG1IRlH4", "completed");
-
-          // Link Donation to Donation Drive
-          File? photo = await pickImageFromGallery();
-
-          await context.read<DonationListProvider>().linkDrive(
-              "rXoXxDLGvSofgG1IRlH4", "X8SHToo4sH9pJSLkL3AG", photo!);
+              .read<DriveListProvider>()
+              .deleteDrive("1bTkhBGmENhtK6A2eT3u");
         },
         child: const Icon(Icons.add_outlined),
       ),

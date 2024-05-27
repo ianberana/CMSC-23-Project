@@ -59,8 +59,6 @@ class FirebaseDonationAPI {
       await db.collection("donations").doc(id).update({'drivePhoto': url});
 
       return "Successfully linked donation to donation drive!";
-
-      return "Successfully linked donation drive!";
     } on FirebaseException catch (e) {
       return "Failed with error '${e.code}: ${e.message}";
     }
