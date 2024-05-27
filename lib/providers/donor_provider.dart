@@ -6,7 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class DonorListProvider with ChangeNotifier {
   late FirebaseDonorAPI firebaseService;
   late Stream<QuerySnapshot> donorStream;
-  Donor? currentDonor;
+  // Donor? currentDonor;
 
   DonorListProvider() {
     firebaseService = FirebaseDonorAPI();
@@ -15,11 +15,11 @@ class DonorListProvider with ChangeNotifier {
 
   // getter
   Stream<QuerySnapshot> get getDonor => donorStream;
-  Donor get current => currentDonor!;
+  // Donor get current => currentDonor!;
 
-  changeCurrentUser(Donor donor) {
-    currentDonor = donor;
-  }
+  // changeCurrentUser(Donor donor) {
+  //   currentDonor = donor;
+  // }
 
   void fetchDonors() {
     donorStream = firebaseService.getAllDonors();
