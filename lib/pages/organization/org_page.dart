@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import '../../models/drive_model.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/org_provider.dart';
 import '../../providers/donation_provider.dart';
 import '../../providers/drive_provider.dart';
 import 'org_profile.dart';
@@ -117,7 +118,20 @@ class _OrganizationPageState extends State<OrganizationPage> {
           //   ),
           // );
 
-          // CREATE static donation drive
+          // UPDATE DONATION status
+          // await context
+          //     .read<DonationListProvider>()
+          //     .updateStatus("rXoXxDLGvSofgG1IRlH4", "completed");
+
+          // // Link DONATION to DONATION DRIVE
+          // File? photo = await pickImageFromGallery();
+
+          // UPDATE ORGANIZATION status
+          await context
+              .read<OrgListProvider>()
+              .updateStatus("GCGt6AMZLTHbzlWdWXse", true);
+
+          // CREATE DONATION DRIVE
           // Drive drive = Drive(
           //     dateCreated: DateTime.now(),
           //     name: "UPLB Mental Health Care",
@@ -127,18 +141,10 @@ class _OrganizationPageState extends State<OrganizationPage> {
           //     orgId: "GCGt6AMZLTHbzlWdWXse");
           // await context.read<DriveListProvider>().addDrive(drive);
 
-          // UPDATE static status
-          // await context
-          //     .read<DonationListProvider>()
-          //     .updateStatus("rXoXxDLGvSofgG1IRlH4", "completed");
-
-          // // Link Donation to Donation Drive
-          // File? photo = await pickImageFromGallery();
-
           // await context.read<DonationListProvider>().linkDrive(
           //     "rXoXxDLGvSofgG1IRlH4", "X8SHToo4sH9pJSLkL3AG", photo!);
 
-          // UPDATE static donation drive
+          // UPDATE DONATION DRIVE
           // Drive drive = Drive(
           //     name: "Typhoon Aghon Relief Care",
           //     description: "Help Typhoon Aghon victims to stand up again.",
@@ -148,10 +154,10 @@ class _OrganizationPageState extends State<OrganizationPage> {
           //     .read<DriveListProvider>()
           //     .editDrive(drive, "X8SHToo4sH9pJSLkL3AG");
 
-          // DELETE static donation drive
-          await context
-              .read<DriveListProvider>()
-              .deleteDrive("1bTkhBGmENhtK6A2eT3u");
+          // DELETE DONATION DRIVE
+          // await context
+          //     .read<DriveListProvider>()
+          //     .deleteDrive("1bTkhBGmENhtK6A2eT3u");
         },
         child: const Icon(Icons.add_outlined),
       ),

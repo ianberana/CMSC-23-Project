@@ -32,4 +32,14 @@ class FirebaseOrgAPI {
       return "Failed with error '${e.code}: ${e.message}";
     }
   }
+
+  Future<String> updateStatus(String id, bool status) async {
+    try {
+      await db.collection("orgs").doc(id).update({"status": status});
+
+      return "Successfully updated status!";
+    } on FirebaseException catch (e) {
+      return "Failed with error '${e.code}: ${e.message}";
+    }
+  }
 }

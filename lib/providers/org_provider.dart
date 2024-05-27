@@ -33,4 +33,10 @@ class OrgListProvider with ChangeNotifier {
     print(message);
     notifyListeners();
   }
+
+  Future<void> updateStatus(String id, bool status) async {
+    String message = await firebaseService.updateStatus(id, status);
+    print(message);
+    notifyListeners();
+  }
 }
