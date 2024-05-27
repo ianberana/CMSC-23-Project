@@ -1,8 +1,13 @@
 // import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import '../../models/drive_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/donation_provider.dart';
+import '../../providers/drive_provider.dart';
 import 'org_profile.dart';
 
 class OrganizationPage extends StatefulWidget {
@@ -111,17 +116,40 @@ class _OrganizationPageState extends State<OrganizationPage> {
           //     item: null,
           //   ),
           // );
-          await context
-              .read<DonationListProvider>()
-              .updateStatus("LJoJUvfjpIBNNd3KFWPG", "completed");
 
+          // Add static donation drive
+          // Drive drive = Drive(
+          //     name: "Typhoon Aghon Relief Care",
+          //     description: "Help Typhoon Aghon victims to satnd up again.",
+          //     contact: "09090909090",
+          //     email: "legacy@gmail.com",
+          //     orgId: "GCGt6AMZLTHbzlWdWXse");
+          // await context.read<DriveListProvider>().addDrive(drive);
+
+          // Update static status
           await context
               .read<DonationListProvider>()
-              .updateDrive("LJoJUvfjpIBNNd3KFWPG", "LJoJUvfjpIBNNd3KFWPG");
+              .updateStatus("rXoXxDLGvSofgG1IRlH4", "completed");
+
+          // Link Donation to Donation Drive
+          File? photo = await pickImageFromGallery();
+
+          await context.read<DonationListProvider>().linkDrive(
+              "rXoXxDLGvSofgG1IRlH4", "X8SHToo4sH9pJSLkL3AG", photo!);
         },
         child: const Icon(Icons.add_outlined),
       ),
     );
+  }
+
+  Future<File?> pickImageFromGallery() async {
+    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    if (image == null) {
+      return null;
+    } else {
+      return File(image.path);
+    }
   }
 
   Drawer get drawer => Drawer(

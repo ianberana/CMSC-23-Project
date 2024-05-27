@@ -15,6 +15,7 @@ class Donation {
   QrImage? qr;
   String donorId;
   String? driveId;
+  String? drivePhoto;
 
   Donation({
     this.id,
@@ -29,23 +30,24 @@ class Donation {
     this.qr,
     required this.donorId,
     this.driveId,
+    this.drivePhoto,
   });
 
   // Factory constructor to instantiate object from json format
   factory Donation.fromJson(Map<String, dynamic> json) {
     return Donation(
-      id: json['id'],
-      item: json['item'],
-      delivery: json['delivery'],
-      weight: json['weight'],
-      photo: json['photo'],
-      date: json['date'],
-      address: json['address'],
-      status: json['status'],
-      qr: json['qr'],
-      donorId: json['donorId'],
-      driveId: json['driveId'],
-    );
+        id: json['id'],
+        item: json['item'],
+        delivery: json['delivery'],
+        weight: json['weight'],
+        photo: json['photo'],
+        date: json['date'],
+        address: json['address'],
+        status: json['status'],
+        qr: json['qr'],
+        donorId: json['donorId'],
+        driveId: json['driveId'],
+        drivePhoto: json['drivePhoto']);
   }
 
   static List<Donation> fromJsonArray(String jsonData) {
@@ -64,7 +66,8 @@ class Donation {
       'status': donation.status,
       'qr': donation.qr,
       'donorId': donation.donorId,
-      'driveId': donation.driveId
+      'driveId': donation.driveId,
+      'drivePhoto': donation.drivePhoto
     };
   }
 }

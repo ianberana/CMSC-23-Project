@@ -27,17 +27,11 @@ class DonationListProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addDonation(Donation donation) async {
+  Future<void> addDonation(Donation donation, File photo) async {
     String message =
-        await firebaseService.addDonation(donation.toJson(donation));
+        await firebaseService.addDonation(donation.toJson(donation), photo);
     print(message);
     notifyListeners();
-  }
-
-  Future<String> uploadPhoto(File proof, String id) async {
-    String url = await firebaseService.uploadPhoto(proof, id);
-    notifyListeners();
-    return url;
   }
 
   Future<void> updateStatus(String id, String status) async {
@@ -46,8 +40,8 @@ class DonationListProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateDrive(String id, String driveId) async {
-    String message = await firebaseService.updateDrive(id, driveId);
+  Future<void> linkDrive(String id, String driveId, File photo) async {
+    String message = await firebaseService.linkDrive(id, driveId, photo);
     print(message);
     notifyListeners();
   }

@@ -11,27 +11,26 @@ class FirebaseDonationAPI {
     return db.collection("donations").snapshots();
   }
 
-  Future<String> addDonation(Map<String, dynamic> donation) async {
+  Future<String> addDonation(Map<String, dynamic> donation, File photo) async {
     try {
-      final docRef = await db.collection("donations").add(donation);
-      await db.collection("donations").doc(docRef.id).update({'id': docRef.id});
+      final donationRef = await db.collection("donations").add(donation);
+      await db
+          .collection("donations")
+          .doc(donationRef.id)
+          .update({'id': donationRef.id});
 
-      return "Successfully added donation!";
-    } on FirebaseException catch (e) {
-      return "Failed with error '${e.code}: ${e.message}";
-    }
-  }
+      final photoRef = await storage.ref().child("donation/${donationRef.id}");
 
-  Future<String> uploadPhoto(File photo, String id) async {
-    try {
-      // final file = File(photo.path);
-      final docRef = await storage.ref().child("donation/${id}");
-
-      UploadTask upload = docRef.putFile(photo);
+      UploadTask upload = photoRef.putFile(photo);
       final snapshot = await upload.whenComplete(() {});
 
       String url = await snapshot.ref.getDownloadURL();
-      return url;
+      await db
+          .collection("donations")
+          .doc(donationRef.id)
+          .update({'photo': url});
+
+      return "Successfully added donation!";
     } on FirebaseException catch (e) {
       return "Failed with error '${e.code}: ${e.message}";
     }
@@ -47,9 +46,19 @@ class FirebaseDonationAPI {
     }
   }
 
-  Future<String> updateDrive(String id, String driveId) async {
+  Future<String> linkDrive(String id, String driveId, File photo) async {
     try {
       await db.collection("donations").doc(id).update({"driveId": driveId});
+
+      final photoRef = await storage.ref().child("drive/${id}");
+
+      UploadTask upload = photoRef.putFile(photo);
+      final snapshot = await upload.whenComplete(() {});
+
+      String url = await snapshot.ref.getDownloadURL();
+      await db.collection("donations").doc(id).update({'drivePhoto': url});
+
+      return "Successfully linked donation to donation drive!";
 
       return "Successfully linked donation drive!";
     } on FirebaseException catch (e) {
