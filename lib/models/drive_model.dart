@@ -2,25 +2,28 @@ import 'dart:convert';
 
 class Drive {
   String? id;
+  DateTime? dateCreated;
   String name;
   String description;
   String contact;
   String email;
-  String orgId;
+  String? orgId;
 
   Drive({
     this.id,
+    this.dateCreated,
     required this.name,
     required this.description,
     required this.contact,
     required this.email,
-    required this.orgId,
+    this.orgId,
   });
 
   // Factory constructor to instantiate object from json format
   factory Drive.fromJson(Map<String, dynamic> json) {
     return Drive(
       id: json['id'],
+      dateCreated: json['dateCreated'],
       name: json['name'],
       description: json['description'],
       contact: json['contact'],
@@ -36,6 +39,7 @@ class Drive {
 
   Map<String, dynamic> toJson(Drive drive) {
     return {
+      'dateCreated': drive.dateCreated,
       'name': drive.name,
       'description': drive.description,
       'contact': drive.contact,

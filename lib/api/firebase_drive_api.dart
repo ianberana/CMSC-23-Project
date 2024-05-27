@@ -1,7 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../models/drive_model.dart';
 
 class FirebaseDriveAPI {
   static final FirebaseFirestore db = FirebaseFirestore.instance;
+
+  Stream<QuerySnapshot> getAllDrives() {
+    return db.collection("drives").snapshots();
+  }
 
   Future<String> addDrive(Map<String, dynamic> drive) async {
     try {
@@ -14,7 +19,28 @@ class FirebaseDriveAPI {
     }
   }
 
-  Stream<QuerySnapshot> getAllDrives() {
-    return db.collection("drives").snapshots();
+  Future<String> editDrive(Drive drive, String id) async {
+    try {
+      await db.collection("drives").doc(id).update({
+        "name": drive.name,
+        "description": drive.description,
+        "contact": drive.contact,
+        "email": drive.email
+      });
+
+      return "Successfully updated donation drive!";
+    } on FirebaseException catch (e) {
+      return "Failed with error '${e.code}: ${e.message}";
+    }
+  }
+
+  Future<String> deleteDrive(String id) async {
+    try {
+      await db.collection("drives").doc(id).delete();
+
+      return "Successfully deleted donation drive!";
+    } on FirebaseException catch (e) {
+      return "Failed with error '${e.code}: ${e.message}";
+    }
   }
 }
