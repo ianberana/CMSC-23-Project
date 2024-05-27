@@ -116,25 +116,22 @@ class _DonorPageState extends State<DonorPage> {
           //     item: null,
           //   ),
           // );
-          File? photo = await pickImageFromGallery();
-          print(photo);
-          print(photo!.path);
 
-          String url = await context
-              .read<DonationListProvider>()
-              .uploadPhoto(photo, "VLYloaQO4QwZS8Ve0ouE");
+          // Add static donation
+          File? photo = await pickImageFromGallery();
 
           Donation donation = Donation(
             item: "food",
             delivery: "pickup",
             weight: 20,
-            photo: url,
             date: DateTime.now(),
             address: ["Los Banos, Laguna"],
             contact: "09123456789",
             donorId: "VLYloaQO4QwZS8Ve0ouE",
           );
-          await context.read<DonationListProvider>().addDonation(donation);
+          await context
+              .read<DonationListProvider>()
+              .addDonation(donation, photo!);
         },
         child: const Icon(Icons.add_outlined),
       ),

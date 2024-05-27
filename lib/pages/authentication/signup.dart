@@ -356,10 +356,6 @@ class _SignUpState extends State<SignUpPage> {
                   await context
                       .read<OrgListProvider>()
                       .addOrganization(org, proofOfLegitimacyFile!);
-                  // String url = await context
-                  //     .read<ProofProvider>()
-                  //     .uploadProof(proofOfLegitimacyFile!, id);
-                  // await context.read<OrgListProvider>().addProof(id, url);
                 } else {
                   Donor donor = Donor(
                       name: nameController.text,
