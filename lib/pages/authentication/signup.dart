@@ -352,7 +352,8 @@ class _SignUpState extends State<SignUpPage> {
                       address: addressController.text,
                       contact: contactController.text,
                       email: emailController.text,
-                      proof: proofOfLegitimacyFile!.path!);
+                      proof: proofOfLegitimacyFile!.path!,
+                      status: true);
 
                   await context
                       .read<OrgListProvider>()
