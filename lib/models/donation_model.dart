@@ -7,9 +7,10 @@ class Donation {
   String item;
   String delivery;
   double weight;
-  File? photo;
+  String? photo;
   DateTime date;
   List address;
+  String? contact;
   String status;
   QrImage? qr;
   String donorId;
@@ -23,7 +24,8 @@ class Donation {
     this.photo,
     required this.date,
     required this.address,
-    required this.status,
+    this.contact,
+    this.status = "pending",
     this.qr,
     required this.donorId,
     this.driveId,
@@ -62,6 +64,7 @@ class Donation {
       'status': donation.status,
       'qr': donation.qr,
       'donorId': donation.donorId,
+      'driveId': donation.driveId
     };
   }
 }

@@ -21,8 +21,8 @@ class ProofProvider with ChangeNotifier {
   // }
 
   Future<String> uploadProof(PlatformFile proof, String id) async {
-    String message = await firebaseService.uploadProof(proof, id);
+    String url = await firebaseService.uploadProof(proof, id);
     notifyListeners();
-    return message;
+    return url;
   }
 }

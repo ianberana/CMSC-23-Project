@@ -3,17 +3,19 @@
   Date: updated May 27, 2024
   Description: Elbi Donation System 
 */
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'providers/auth_provider.dart';
 import 'providers/org_provider.dart';
 import 'providers/proof_provider.dart';
 import 'providers/user_provider.dart';
 import 'providers/donor_provider.dart';
+import 'providers/donation_provider.dart';
 import 'pages/authentication/authenticate.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,6 +31,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: ((context) => DonorListProvider())),
         ChangeNotifierProvider(create: ((context) => OrgListProvider())),
         ChangeNotifierProvider(create: ((context) => ProofProvider())),
+        ChangeNotifierProvider(create: ((context) => DonationListProvider())),
       ],
       child: MyApp(),
     ),
