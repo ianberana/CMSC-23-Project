@@ -1,3 +1,4 @@
+import 'package:elbi_donate/pages/organization/org_drawer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +20,7 @@ class _OrganizationProfileState extends State<OrganizationProfile> {
         appBar: AppBar(
           title: const Text("Details"),
         ),
+        drawer: OrgDrawer(),
         body: Container(
           margin: EdgeInsets.all(30),
           child: Center(
