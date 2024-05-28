@@ -4,7 +4,9 @@
   Description: Sample todo app with Firebase 
 */
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:elbi_donate/models/drive_model.dart';
+import 'package:elbi_donate/providers/drive_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 // import 'package:week7_networking_discussion/models/todo_model.dart';
@@ -12,10 +14,10 @@ import 'package:provider/provider.dart';
 
 class DriveModal extends StatelessWidget {
   String type;
-  int driveIndex;
+  final Drive? driveItem;
   TextEditingController _formFieldController = TextEditingController();
 
-  DriveModal({super.key, required this.type, required this.driveIndex});
+  DriveModal({super.key, required this.type, required this.driveItem});
 
   // Method to show the title of the modal depending on the functionality
   Text _buildTitle() {
@@ -34,39 +36,35 @@ class DriveModal extends StatelessWidget {
   // Method to build the content or body depending on the functionality
   Widget _buildContent(BuildContext context) {
     // Use context.read to get the last updated list of todos
-    List<Drive> driveItems = context.read<DriveListProvider>().drive;
+    Stream<QuerySnapshot> driveItems = context.read<DriveListProvider>().getDonor;
 
     switch (type) {
       case 'Delete':
         {
-          return Text(
-            "Are you sure you want to delete '${driveItems[driveIndex].name}'?",
-          );
+              return Text(
+                "Are you sure you want to delete '${driveItem!.name}'?",
+              );
         }
       // Edit and add will have input field in them
       default:
         return TextField(
           controller: _formFieldController,
-          decoration: InputDecoration(
-            border: const OutlineInputBorder(),
-            hintText: driveIndex != -1 ? driveItems[driveIndex].name : '',
+          decoration: const InputDecoration(
+            border: OutlineInputBorder(),
           ),
         );
     }
   }
 
   TextButton _dialogAction(BuildContext context) {
-    List<Drive> driveItems = context.read<DriveListProvider>().drive;
-
     return TextButton(
       onPressed: () {
         switch (type) {
           case 'Add':
             {
-              // Instantiate a todo objeect to be inserted, default userID will be 1, the id will be the next id in the list
               Drive temp = Drive(
                 id: '',
-                name: '',
+                name: _formFieldController.text,
                 description: '',
                 contact: '',
                 email: '',
@@ -83,7 +81,7 @@ class DriveModal extends StatelessWidget {
             {
               context
                   .read<DriveListProvider>()
-                  .editDrive(driveIndex, _formFieldController.text);
+                  .editDrive(driveItem!.id! as Drive, _formFieldController.text);
 
               // Remove dialog after editing
               Navigator.of(context).pop();
@@ -91,11 +89,9 @@ class DriveModal extends StatelessWidget {
             }
           case 'Delete':
             {
-              context
-                  .read<DriveListProvider>()
-                  .deleteDrive(driveItems[driveIndex].name);
+              context.read<DriveListProvider>().deleteDrive(driveItem!.id!);
 
-              // Remove dialog after editing
+              // Remove dialog after deleting
               Navigator.of(context).pop();
               break;
             }
