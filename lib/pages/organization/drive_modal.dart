@@ -1,21 +1,18 @@
-/*
-  Created by: Claizel Coubeili Cepe
-  Date: updated April 26, 2023
-  Description: Sample todo app with Firebase 
-*/
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:elbi_donate/models/drive_model.dart';
 import 'package:elbi_donate/providers/drive_provider.dart';
+import 'package:elbi_donate/providers/org_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-// import 'package:week7_networking_discussion/models/todo_model.dart';
-// import 'package:week7_networking_discussion/providers/todo_provider.dart';
 
 class DriveModal extends StatelessWidget {
-  String type;
+  final _formKey = GlobalKey<FormState>();
+  final String type;
   final Drive? driveItem;
-  TextEditingController _formFieldController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _contactController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
 
   DriveModal({super.key, required this.type, required this.driveItem});
 
@@ -35,22 +32,95 @@ class DriveModal extends StatelessWidget {
 
   // Method to build the content or body depending on the functionality
   Widget _buildContent(BuildContext context) {
-    // Use context.read to get the last updated list of todos
-    Stream<QuerySnapshot> driveItems = context.read<DriveListProvider>().getDonor;
+    // Regular expression for email validation
+    final RegExp emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+
+    // Regular expression for phone number validation
+    final RegExp phoneRegex = RegExp(r'^\d{11}$');
 
     switch (type) {
       case 'Delete':
         {
-              return Text(
-                "Are you sure you want to delete '${driveItem!.name}'?",
-              );
+          return Text(
+            "Are you sure you want to delete '${driveItem!.name}'?",
+          );
         }
       // Edit and add will have input field in them
       default:
-        return TextField(
-          controller: _formFieldController,
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
+        return Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  controller: _nameController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Name',
+                    hintText: "Enter organization drive name",
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a name';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 15),
+                TextFormField(
+                  controller: _descriptionController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Description',
+                    hintText: "Enter description",
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a description';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 15),
+                TextFormField(
+                  controller: _contactController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Contact no.',
+                    hintText: "09XX-XXX-XXXX",
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a contact number';
+                    }
+                    if (!phoneRegex.hasMatch(value)) {
+                      return 'Please enter a valid contact number';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 15),
+                TextFormField(
+                  controller: _emailController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Enter a valid email',
+                    hintText: "Enter Email Address",
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Please enter an email address";
+                    }
+                    if (!emailRegex.hasMatch(value)) {
+                      return 'Please enter a valid email address';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 15),
+              ],
+            ),
           ),
         );
     }
@@ -64,27 +134,40 @@ class DriveModal extends StatelessWidget {
             {
               Drive temp = Drive(
                 id: '',
-                name: _formFieldController.text,
-                description: '',
-                contact: '',
-                email: '',
-                orgId: '',
+                name: _nameController.text,
+                description: _descriptionController.text,
+                contact: _contactController.text,
+                email: _emailController.text,
+                orgId: 'a',
+                date: DateTime.now(),
               );
+              if (_formKey.currentState!.validate()) {
+                context.read<DriveListProvider>().addDrive(temp);
 
-              context.read<DriveListProvider>().addDrive(temp);
-
-              // Remove dialog after adding
-              Navigator.of(context).pop();
+                // Remove dialog after adding
+                Navigator.of(context).pop();
+              }
               break;
             }
           case 'Edit':
             {
-              context
-                  .read<DriveListProvider>()
-                  .editDrive(driveItem!.id! as Drive, _formFieldController.text);
+              if (driveItem != null) {
+                Drive updatedDrive = Drive(
+                  id: driveItem!.id,
+                  name: _nameController.text,
+                  description: _descriptionController.text,
+                  contact: _contactController.text,
+                  email: _emailController.text,
+                  orgId: driveItem!.orgId,
+                  date: driveItem!.date, // Update the date to the current date
+                );
+                context
+                    .read<DriveListProvider>()
+                    .editDrive(updatedDrive, driveItem!.id!);
 
-              // Remove dialog after editing
-              Navigator.of(context).pop();
+                // Remove dialog after editing
+                Navigator.of(context).pop();
+              }
               break;
             }
           case 'Delete':
