@@ -10,6 +10,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class OrgDonationDrive extends StatelessWidget {
+  String formatTimestamp(DateTime timestamp) {
+    String month = timestamp.month.toString();
+    String day = timestamp.day.toString();
+    String year = timestamp.year.toString();
+    String period = timestamp.hour < 12 ? 'AM' : 'PM';
+    int hour = timestamp.hour > 12 ? timestamp.hour - 12 : timestamp.hour;
+    String minute = timestamp.minute.toString().padLeft(2, '0');
+    return '$month-$day-$year || $hour:$minute $period';
+  }
+
   @override
   Widget build(BuildContext context) {
     Stream<QuerySnapshot> driveStream =
@@ -39,7 +49,7 @@ class OrgDonationDrive extends StatelessWidget {
               );
             } else if (!snapshot.hasData) {
               return const Center(
-                child: Text("No Todos Found"),
+                child: Text("No Donation Drives Yet"),
               );
             }
 
@@ -68,24 +78,20 @@ class OrgDonationDrive extends StatelessWidget {
                       title: Text(
                         "${drive.name}",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18),
+                            fontWeight: FontWeight.bold, fontSize: 20),
                       ),
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(
-                            height: 3,
-                          ),
-                          Text('Date Created: 12-02-2020'),
-                          SizedBox(
-                            height: 3,
-                          ),
+                          SizedBox(height: 3),
+                          Text('${formatTimestamp(drive.date)}'),
+                          SizedBox(height: 3),
                           GestureDetector(
                             onTap: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => OrganizationPage()),
+                                    builder: (context) => OrgDonationDetails()),
                               );
                             },
                             child: const Text(
@@ -133,7 +139,9 @@ class OrgDonationDrive extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => OrgDonationDriveDetails()),
+                              builder: (context) => OrgDonationDriveDetails(
+                                    drive: drive,
+                                  )),
                         );
                       },
                     ),
@@ -162,68 +170,3 @@ class OrgDonationDrive extends StatelessWidget {
     );
   }
 }
-
-// class DonationDriveCard extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Card(
-//       margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-//       child: ListTile(
-//         title: Text(
-//           'Magenta Alarcon Drive',
-//           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-//         ),
-//         subtitle: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             SizedBox(
-//               height: 3,
-//             ),
-//             Text('Date Created: 12-02-2020'),
-//             SizedBox(
-//               height: 3,
-//             ),
-//             GestureDetector(
-//               onTap: () {
-//                 Navigator.push(
-//                   context,
-//                   MaterialPageRoute(builder: (context) => OrganizationPage()),
-//                 );
-//               },
-//               child: const Text(
-//                 'Donation Details >',
-//                 style: TextStyle(
-//                   color: Color(0xFF008080),
-//                   fontWeight: FontWeight.bold,
-//                 ),
-//               ),
-//             ),
-//           ],
-//         ),
-//         trailing: Wrap(
-//           spacing: 10, // space between two icons
-//           children: <Widget>[
-//             IconButton(
-//               icon: Icon(Icons.edit),
-//               onPressed: () {
-//                 //edit functionality
-//               },
-//             ),
-//             IconButton(
-//               icon: Icon(Icons.delete),
-//               onPressed: () {
-//                 //delete functionality
-//               },
-//             ),
-//           ],
-//         ),
-//         onTap: () {
-//           Navigator.push(
-//             context,
-//             MaterialPageRoute(builder: (context) => OrgDonationDriveDetails()),
-//           );
-//         },
-//       ),
-//     );
-//   }
-// }
