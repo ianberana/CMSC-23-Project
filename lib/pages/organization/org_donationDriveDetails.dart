@@ -1,6 +1,11 @@
+import 'package:elbi_donate/models/drive_model.dart';
 import 'package:flutter/material.dart';
 
 class OrgDonationDriveDetails extends StatelessWidget {
+  final Drive drive;
+
+  OrgDonationDriveDetails({required this.drive});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,13 +22,13 @@ class OrgDonationDriveDetails extends StatelessWidget {
             ),
             SizedBox(height: 16),
             Text(
-              'Magenta Alarcon Drive\n12-02-2020',
+              '${drive.name}\n${drive.date}',
               style: TextStyle(fontSize: 24),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 16),
             Text(
-              'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Felis tristique euismod odio ipsum senectus commodo. Ullamcorper ac tellus porta ipsum mattis sed vivamus metus. Et tellus diam. Ullamcorper ac tellus porta ipsum mattis sed vivamus.',
+              '${drive.description}',
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 16),
