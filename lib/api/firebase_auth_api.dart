@@ -34,10 +34,9 @@ class FirebaseAuthAPI {
     }
   }
 
-  Future<void> signUp(String email, String password) async {
-    UserCredential credential;
+  Future<String> signUp(String email, String password) async {
     try {
-      credential = await auth.createUserWithEmailAndPassword(
+      UserCredential credential = await auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -45,17 +44,21 @@ class FirebaseAuthAPI {
       //let's print the object returned by signInWithEmailAndPassword
       //you can use this object to get the user's id, email, etc.\
       print(credential);
+      return "Successfully signed up new user.";
     } on FirebaseAuthException catch (e) {
       //possible to return something more useful
       //than just print an error message to improve UI/UX
       if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
+        return 'The password provided is too weak.';
       } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
+        return 'The account already exists for that email.';
       }
     } catch (e) {
       print(e);
+      return "Failed to sign up new user.";
     }
+
+    return "";
   }
 
   Future<void> signOut() async {

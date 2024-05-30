@@ -42,7 +42,8 @@ class _AuthenticateState extends State<Authenticate> {
             return SignInPage();
           }
 
-          return UserType();
+          String? email = context.watch<UserAuthProvider>().user!.email;
+          return UserType(email!);
         });
   }
 }

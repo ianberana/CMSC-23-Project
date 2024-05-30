@@ -3,9 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import '../../models/donor_model.dart';
+import '../../models/donation_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/donation_provider.dart';
-import '../../models/donation_model.dart';
+import '../../providers/donor_provider.dart';
 import 'donor_profile.dart';
 
 class DonorPage extends StatefulWidget {
@@ -20,6 +22,7 @@ class _DonorPageState extends State<DonorPage> {
 
   @override
   Widget build(BuildContext context) {
+    Donor? donor = context.watch<DonorListProvider>().currentDonor;
     // Stream<QuerySnapshot> todosStream = context.watch<TodoListProvider>().todo;
     return Scaffold(
       drawer: drawer,
@@ -128,7 +131,8 @@ class _DonorPageState extends State<DonorPage> {
             dateDelivery: DateTime.now(),
             address: ["Los Banos, Laguna"],
             contact: "09123456789",
-            donorId: "VLYloaQO4QwZS8Ve0ouE",
+            donorId: donor!.id!,
+            orgId: "7VI3RQEfEkEeBrJtzMZM",
           );
           await context
               .read<DonationListProvider>()
