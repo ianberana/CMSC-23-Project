@@ -1,8 +1,9 @@
+import 'package:elbi_donate/providers/donation_provider.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import '../../providers/auth_provider.dart';
+//import '../../providers/auth_provider.dart';
 //import '../../providers/donation_provider.dart';
 import '../../models/donation_model.dart';
 import 'donor_drawer.dart';
@@ -47,20 +48,9 @@ class _DonorPageState extends State<DonorPage> {
         onPressed: () async {
           // Add static donation
           File? photo = await pickImageFromGallery();
-
-          // Donation donation = Donation(
-          //   dateCreated: DateTime.now(),
-          //   item: "food",
-          //   delivery: "pickup",
-          //   weight: 20,
-          //   dateDelivery: DateTime.now(),
-          //   address: ["Los Banos, Laguna"],
-          //   contact: "09123456789",
-          //   donorId: "VLYloaQO4QwZS8Ve0ouE",
-          // );
-          // await context
-          //     .read<DonationListProvider>()
-          //     .addDonation(donation, photo!);
+          setState(() {
+            this.photo = photo;
+          });
         },
         child: const Icon(Icons.add_outlined),
       ),
@@ -95,6 +85,12 @@ class _DonorPageState extends State<DonorPage> {
 
     // Initialize a list to hold the selected items
     List<String> selectedItems = [];
+
+    final deliveryController = TextEditingController();
+    final weightController = TextEditingController();
+    final dateTimeController = TextEditingController();
+    final addressController = TextEditingController();
+    final contactController = TextEditingController();
 
     showModalBottomSheet(
       context: context,
@@ -136,42 +132,48 @@ class _DonorPageState extends State<DonorPage> {
                       ),
                     SizedBox(height: 10),
                     TextFormField(
+                      controller: deliveryController,
                       decoration: InputDecoration(labelText: "Pickup or Drop off"),
                     ),
                     SizedBox(height: 10),
                     TextFormField(
+                      controller: weightController,
                       decoration: InputDecoration(labelText: "Weight of donation (kg)"),
                       keyboardType: TextInputType.number,
                     ),
                     SizedBox(height: 10),
                     TextFormField(
+                      controller: dateTimeController,
                       decoration: InputDecoration(labelText: "Date and Time of pickup/drop off"),
                     ),
                     SizedBox(height: 20),
                     TextFormField(
+                      controller: addressController,
                       decoration: InputDecoration(labelText: "Address (for pickup option only)"),
                     ),
                     SizedBox(height: 20),
                     TextFormField(
+                      controller: contactController,
                       decoration: InputDecoration(labelText: "Contact Number (for pickup option only)"),
                       keyboardType: TextInputType.number,
                     ),
                     ElevatedButton(
-                      onPressed: () {
-                        // Implement donation submission logic here
-                        // Donation donation = Donation(
-                        //   dateCreated: DateTime.now(),
-                        //   items: selectedItems, // Assuming you have an `items` field in your Donation model
-                        //   delivery: "pickup", // Retrieve the actual value from the form field
-                        //   weight: 20, // Retrieve the actual value from the form field
-                        //   dateDelivery: DateTime.now(), // Retrieve the actual value from the form field
-                        //   address: ["Los Banos, Laguna"], // Retrieve the actual value from the form field
-                        //   contact: "09123456789", // Retrieve the actual value from the form field
-                        //   donorId: "VLYloaQO4QwZS8Ve0ouE",
-                        // );
+                      onPressed: () async {
+                        
+                        //Implement donation submission logic here
+                        Donation donation = Donation(
+                          //dateCreated: DateTime.now(),
+                          item: selectedItems, // Assuming you have an `items` field in your Donation model
+                          delivery: deliveryController.text, // Retrieve the actual value from the form field
+                          weight: double.parse(weightController.text), // Retrieve the actual value from the form field
+                          dateDelivery: DateTime.now(), // Retrieve the actual value from the form field
+                          address: [addressController.text], // Retrieve the actual value from the form field
+                          contact: contactController.text, // Retrieve the actual value from the form field
+                          donorId: "VLYloaQO4QwZS8Ve0ouE",
+                        );
 
                         // // Add the donation to your provider
-                        // context.read<DonationListProvider>().addDonation(donation, photo!);
+                        context.read<DonationListProvider>().addDonation(donation, photo!);
 
                         // Close the bottom sheet
                         Navigator.pop(context);

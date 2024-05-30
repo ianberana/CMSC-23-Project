@@ -4,13 +4,14 @@ import 'package:qr_flutter/qr_flutter.dart';
 
 class Donation {
   String? id;
-  String item;
+  List<String> item;
   String delivery;
   double weight;
   File? photo;
-  DateTime date;
-  List address;
-  String status;
+  DateTime dateDelivery;
+  List<String> address;
+  String contact;
+  //String status;
   QrImage? qr;
   String donorId;
   String? driveId;
@@ -21,12 +22,13 @@ class Donation {
     required this.delivery,
     required this.weight,
     this.photo,
-    required this.date,
+    required this.dateDelivery,
     required this.address,
-    required this.status,
+    required this.contact,
+    //required this.status,
     this.qr,
     required this.donorId,
-    this.driveId,
+    this.driveId, DateTime,
   });
 
   // Factory constructor to instantiate object from json format
@@ -37,9 +39,10 @@ class Donation {
       delivery: json['delivery'],
       weight: json['weight'],
       photo: json['photo'],
-      date: json['date'],
+      dateDelivery: json['date'],
       address: json['address'],
-      status: json['status'],
+      contact: json['contact'],
+      //status: json['status'],
       qr: json['qr'],
       donorId: json['donorId'],
       driveId: json['driveId'],
@@ -57,9 +60,10 @@ class Donation {
       'delivery': donation.delivery,
       'weight': donation.weight,
       'photo': donation.photo,
-      'date': donation.date,
+      'date': donation.dateDelivery,
       'address': donation.address,
-      'status': donation.status,
+      'contact': donation.contact,
+      //'status': donation.status,
       'qr': donation.qr,
       'donorId': donation.donorId,
     };
