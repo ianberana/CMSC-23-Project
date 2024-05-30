@@ -1,12 +1,12 @@
 import 'dart:convert';
 
 class User {
-  String? id;
+  String id;
   String email;
   String type;
 
   User({
-    this.id,
+    required this.id,
     required this.email,
     required this.type,
   });
@@ -27,6 +27,7 @@ class User {
 
   Map<String, dynamic> toJson(User user) {
     return {
+      'id': user.id,
       'email': user.email,
       'type': user.type,
     };

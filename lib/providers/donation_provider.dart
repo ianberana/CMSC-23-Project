@@ -6,49 +6,49 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DonationListProvider with ChangeNotifier {
   late FirebaseDonationAPI firebaseService;
-  late Stream<QuerySnapshot> donationStream;
-  // Donation? currentDonation;
 
   DonationListProvider() {
     firebaseService = FirebaseDonationAPI();
-    fetchDonations();
   }
 
-  // getter
-  Stream<QuerySnapshot> get getDonation => donationStream;
-  // Donation get current => currentDonation!;
-
-  // changeCurrentUser(Donation donation) {
-  //   currentDonation = donation;
-  // }
-
-  void fetchDonations() {
-    donationStream = firebaseService.getAllDonations();
-    notifyListeners();
-  }
-
-  Future<void> addDonation(Donation donation) async {
+  // FOR DONOR
+  Future<void> addDonation(Donation donation, File photo) async {
     String message =
-        await firebaseService.addDonation(donation.toJson(donation));
+        await firebaseService.addDonation(donation.toJson(donation), photo);
     print(message);
     notifyListeners();
   }
 
-  Future<String> uploadPhoto(File proof, String id) async {
-    String url = await firebaseService.uploadPhoto(proof, id);
+  Stream<QuerySnapshot> getDonorDonations(String donorId) {
+    Stream<QuerySnapshot> donationStream =
+        firebaseService.getDonorDonations(donorId);
     notifyListeners();
-    return url;
+    return donationStream;
   }
 
-  Future<void> updateStatus(String id, String status) async {
-    String message = await firebaseService.updateStatus(id, status);
+  Future<void> cancelDonation(String id) async {
+    String message = await firebaseService.cancelDonation(id);
     print(message);
     notifyListeners();
   }
 
-  Future<void> updateDrive(String id, String driveId) async {
-    String message = await firebaseService.updateDrive(id, driveId);
+  // FOR ORGANIZATION
+  Future<void> confirmDonation(String id, bool status) async {
+    String message = await firebaseService.confirmDonation(id, status);
     print(message);
     notifyListeners();
+  }
+
+  Future<void> completeDonation(String id, String driveId, File photo) async {
+    String message = await firebaseService.completeDonation(id, driveId, photo);
+    print(message);
+    notifyListeners();
+  }
+
+  // FOR ORGANIZATION/ADMIN
+  Stream<QuerySnapshot> getOrgDonations(String orgId) {
+    Stream<QuerySnapshot> donationStream =
+        firebaseService.getOrgDonations(orgId);
+    return donationStream;
   }
 }
