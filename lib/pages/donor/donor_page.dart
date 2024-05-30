@@ -90,85 +90,101 @@ class _DonorPageState extends State<DonorPage> {
   }
 
   void _showDonateDialog(BuildContext context) {
-  // Define the available donation items
-  List<String> donationItems = ["Food", "Clothes", "Cash"];
+    // Define the available donation items
+    List<String> donationItems = ["Food", "Clothes", "Cash"];
 
-  // Initialize a list to hold the selected items
-  List<String> selectedItems = [];
+    // Initialize a list to hold the selected items
+    List<String> selectedItems = [];
 
-  showModalBottomSheet(
-    context: context,
-    builder: (BuildContext context) {
-      return SingleChildScrollView(
-        child: Container(
-          padding: EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                "Donate to Organization",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return SingleChildScrollView(
+              child: Container(
+                padding: EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      "Donate to Organization",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 20),
+                    // Checkbox group for donation items
+                    for (String item in donationItems)
+                      CheckboxListTile(
+                        title: Text(item),
+                        value: selectedItems.contains(item),
+                        onChanged: (bool? value) {
+                          setState(() {
+                            if (value != null && value) {
+                              // If checkbox is checked, add item to selectedItems
+                              selectedItems.add(item);
+                            } else {
+                              // If checkbox is unchecked, remove item from selectedItems
+                              selectedItems.remove(item);
+                            }
+                          });
+                        },
+                      ),
+                    SizedBox(height: 10),
+                    TextFormField(
+                      decoration: InputDecoration(labelText: "Pickup or Drop off"),
+                    ),
+                    SizedBox(height: 10),
+                    TextFormField(
+                      decoration: InputDecoration(labelText: "Weight of donation (kg)"),
+                      keyboardType: TextInputType.number,
+                    ),
+                    SizedBox(height: 10),
+                    TextFormField(
+                      decoration: InputDecoration(labelText: "Date and Time of pickup/drop off"),
+                    ),
+                    SizedBox(height: 20),
+                    TextFormField(
+                      decoration: InputDecoration(labelText: "Address (for pickup option only)"),
+                    ),
+                    SizedBox(height: 20),
+                    TextFormField(
+                      decoration: InputDecoration(labelText: "Contact Number (for pickup option only)"),
+                      keyboardType: TextInputType.number,
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        // Implement donation submission logic here
+                        // Donation donation = Donation(
+                        //   dateCreated: DateTime.now(),
+                        //   items: selectedItems, // Assuming you have an `items` field in your Donation model
+                        //   delivery: "pickup", // Retrieve the actual value from the form field
+                        //   weight: 20, // Retrieve the actual value from the form field
+                        //   dateDelivery: DateTime.now(), // Retrieve the actual value from the form field
+                        //   address: ["Los Banos, Laguna"], // Retrieve the actual value from the form field
+                        //   contact: "09123456789", // Retrieve the actual value from the form field
+                        //   donorId: "VLYloaQO4QwZS8Ve0ouE",
+                        // );
+
+                        // // Add the donation to your provider
+                        // context.read<DonationListProvider>().addDonation(donation, photo!);
+
+                        // Close the bottom sheet
+                        Navigator.pop(context);
+                      },
+                      child: Text("Submit"),
+                    ),
+                  ],
                 ),
-                textAlign: TextAlign.center,
               ),
-              SizedBox(height: 20),
-              // Checkbox group for donation items
-              for (String item in donationItems)
-                CheckboxListTile(
-                  title: Text(item),
-                  value: selectedItems.contains(item),
-                  onChanged: (bool? value) {
-                    setState(() {
-                      if (value != null && value) {
-                        // If checkbox is checked, add item to selectedItems
-                        selectedItems.add(item);
-                      } else {
-                        // If checkbox is unchecked, remove item from selectedItems
-                        selectedItems.remove(item);
-                      }
-                    });
-                  },
-                ),
-              SizedBox(height: 10),
-              TextFormField(
-                decoration: InputDecoration(labelText: "Pickup or Drop off"),
-              ),
-              SizedBox(height: 10),
-              TextFormField(
-                decoration: InputDecoration(labelText: "Weight of donation (kg)"),
-                keyboardType: TextInputType.number,
-              ),
-              SizedBox(height: 10),
-              TextFormField(
-                decoration: InputDecoration(labelText: "Date and Time of pickup/drop off"),
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                //   Donation donation = Donation(
-                //   dateCreated: DateTime.now(),
-                //   item: "food",
-                //   delivery: "pickup",
-                //   weight: 20,
-                //   dateDelivery: DateTime.now(),
-                //   address: ["Los Banos, Laguna"],
-                //   contact: "09123456789",
-                //   donorId: "VLYloaQO4QwZS8Ve0ouE",
-                // );
-                  Navigator.pop(context);
-                },
-                child: Text("Submit"),
-              ),
-            ],
-          ),
-        ),
-      );
-    },
-  );
-}
-
-
+            );
+          },
+        );
+      },
+    );
+  }
 }
