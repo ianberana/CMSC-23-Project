@@ -1,29 +1,31 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Drive {
   String? id;
-  DateTime? dateCreated;
+  DateTime dateCreated;
   String name;
   String description;
   String contact;
   String email;
-  String? orgId;
+  String orgId;
 
   Drive({
     this.id,
-    this.dateCreated,
+    required this.dateCreated,
     required this.name,
     required this.description,
     required this.contact,
     required this.email,
-    this.orgId,
+    required this.orgId,
   });
 
   // Factory constructor to instantiate object from json format
   factory Drive.fromJson(Map<String, dynamic> json) {
     return Drive(
       id: json['id'],
-      dateCreated: json['dateCreated'],
+      dateCreated: (json['dateCreated'] as Timestamp).toDate(),
       name: json['name'],
       description: json['description'],
       contact: json['contact'],

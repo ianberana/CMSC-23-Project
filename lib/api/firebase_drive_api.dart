@@ -4,10 +4,12 @@ import '../models/drive_model.dart';
 class FirebaseDriveAPI {
   static final FirebaseFirestore db = FirebaseFirestore.instance;
 
-  Stream<QuerySnapshot> getAllDrives() {
-    return db.collection("drives").snapshots();
+  // FOR DONOR/ORGANIZATION
+  Stream<QuerySnapshot> getOrgDrives(String orgId) {
+    return db.collection("drives").where("orgId", isEqualTo: orgId).snapshots();
   }
 
+  // FOR ORGANIZATION
   Future<String> addDrive(Map<String, dynamic> drive) async {
     try {
       final docRef = await db.collection("drives").add(drive);

@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:file_picker/file_picker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Organization {
   String? id;
@@ -28,7 +28,7 @@ class Organization {
   factory Organization.fromJson(Map<String, dynamic> json) {
     return Organization(
       id: json['id'],
-      dateCreated: json['dateCreated'],
+      dateCreated: (json['dateCreated'] as Timestamp).toDate(),
       name: json['name'],
       address: json['address'],
       contact: json['contact'],

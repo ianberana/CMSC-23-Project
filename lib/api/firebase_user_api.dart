@@ -7,12 +7,15 @@ class FirebaseUserAPI {
     return db.collection("users").snapshots();
   }
 
+  Stream<QuerySnapshot> getUser(String email) {
+    return db.collection("users").where("email", isEqualTo: email).snapshots();
+  }
+
   Future<String> addUser(Map<String, dynamic> user) async {
     try {
       final docRef = await db.collection("users").add(user);
-      await db.collection("users").doc(docRef.id).update({'id': docRef.id});
 
-      return "Successfully added organization!";
+      return "Successfully added user!";
     } on FirebaseException catch (e) {
       return "Failed with error '${e.code}: ${e.message}";
     }

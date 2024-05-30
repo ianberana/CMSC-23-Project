@@ -1,14 +1,15 @@
-// import 'package:cloud_firestore/cloud_firestore.dart';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import '../../models/donation_model.dart';
 import '../../models/drive_model.dart';
+import '../../models/org_model.dart';
 import '../../providers/auth_provider.dart';
-import '../../providers/org_provider.dart';
 import '../../providers/donation_provider.dart';
 import '../../providers/drive_provider.dart';
+import '../../providers/org_provider.dart';
 import 'org_profile.dart';
 
 class OrganizationPage extends StatefulWidget {
@@ -21,93 +22,98 @@ class OrganizationPage extends StatefulWidget {
 class _OrganizationPageState extends State<OrganizationPage> {
   @override
   Widget build(BuildContext context) {
-    // Stream<QuerySnapshot> todosStream = context.watch<TodoListProvider>().todo;
+    Organization? org = context.watch<OrgListProvider>().currentOrg;
+    // Stream<QuerySnapshot> driveStream =
+    //     context.watch<DriveListProvider>().getOrgDrives(org!.id!);
+    Stream<QuerySnapshot> donationStream =
+        context.watch<DonationListProvider>().getOrgDonations(org!.id!);
     return Scaffold(
       drawer: drawer,
       appBar: AppBar(
         title: const Text("Organization Page"),
       ),
-      body: Container(),
-      // StreamBuilder(
-      //   stream: todosStream,
-      //   builder: (context, snapshot) {
-      //     if (snapshot.hasError) {
-      //       return Center(
-      //         child: Text("Error encountered! ${snapshot.error}"),
-      //       );
-      //     } else if (snapshot.connectionState == ConnectionState.waiting) {
-      //       return const Center(
-      //         child: CircularProgressIndicator(),
-      //       );
-      //     } else if (!snapshot.hasData) {
-      //       return const Center(
-      //         child: Text("No Todos Found"),
-      //       );
-      //     }
+      body: StreamBuilder(
+        stream: donationStream,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Text("Error encountered! ${snapshot.error}"),
+            );
+          } else if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (!snapshot.hasData) {
+            return const Center(
+              child: Text("No Drives Found"),
+            );
+          }
 
-      //     return ListView.builder(
-      //       itemCount: snapshot.data?.docs.length,
-      //       itemBuilder: ((context, index) {
-      //         Todo todo = Todo.fromJson(
-      //             snapshot.data?.docs[index].data() as Map<String, dynamic>);
-      //         todo.id = snapshot.data?.docs[index].id;
-      //         return Dismissible(
-      //           key: Key(todo.id.toString()),
-      //           onDismissed: (direction) {
-      //             context.read<TodoListProvider>().deleteTodo(todo.title);
+          return ListView.builder(
+            itemCount: snapshot.data?.docs.length,
+            itemBuilder: ((context, index) {
+              Donation donation = Donation.fromJson(
+                  snapshot.data?.docs[index].data() as Map<String, dynamic>);
+              print(donation.orgId);
+              return ListTile(title: Text(donation.orgId));
+              // todo.id = snapshot.data?.docs[index].id;
+              // return Dismissible(
+              //   key: Key(todo.id.toString()),
+              //   onDismissed: (direction) {
+              //     context.read<TodoListProvider>().deleteTodo(todo.title);
 
-      //             ScaffoldMessenger.of(context).showSnackBar(
-      //                 SnackBar(content: Text('${todo.title} dismissed')));
-      //           },
-      //           background: Container(
-      //             color: Colors.red,
-      //             child: const Icon(Icons.delete),
-      //           ),
-      //           child: ListTile(
-      //             title: Text(todo.title),
-      //             leading: Checkbox(
-      //               value: todo.completed,
-      //               onChanged: (bool? value) {
-      //                 context
-      //                     .read<TodoListProvider>()
-      //                     .toggleStatus(todo.id!, value!);
-      //               },
-      //             ),
-      //             trailing: Row(
-      //               mainAxisSize: MainAxisSize.min,
-      //               children: [
-      //                 IconButton(
-      //                   onPressed: () {
-      //                     showDialog(
-      //                       context: context,
-      //                       builder: (BuildContext context) => TodoModal(
-      //                         type: 'Edit',
-      //                         item: todo,
-      //                       ),
-      //                     );
-      //                   },
-      //                   icon: const Icon(Icons.create_outlined),
-      //                 ),
-      //                 IconButton(
-      //                   onPressed: () {
-      //                     showDialog(
-      //                       context: context,
-      //                       builder: (BuildContext context) => TodoModal(
-      //                         type: 'Delete',
-      //                         item: todo,
-      //                       ),
-      //                     );
-      //                   },
-      //                   icon: const Icon(Icons.delete_outlined),
-      //                 )
-      //               ],
-      //             ),
-      //           ),
-      //         );
-      //       }),
-      //     );
-      //   },
-      // ),
+              //     ScaffoldMessenger.of(context).showSnackBar(
+              //         SnackBar(content: Text('${todo.title} dismissed')));
+              //   },
+              //   background: Container(
+              //     color: Colors.red,
+              //     child: const Icon(Icons.delete),
+              //   ),
+              //   child: ListTile(
+              //     title: Text(todo.title),
+              //     leading: Checkbox(
+              //       value: todo.completed,
+              //       onChanged: (bool? value) {
+              //         context
+              //             .read<TodoListProvider>()
+              //             .toggleStatus(todo.id!, value!);
+              //       },
+              //     ),
+              //     trailing: Row(
+              //       mainAxisSize: MainAxisSize.min,
+              //       children: [
+              //         IconButton(
+              //           onPressed: () {
+              //             showDialog(
+              //               context: context,
+              //               builder: (BuildContext context) => TodoModal(
+              //                 type: 'Edit',
+              //                 item: todo,
+              //               ),
+              //             );
+              //           },
+              //           icon: const Icon(Icons.create_outlined),
+              //         ),
+              //         IconButton(
+              //           onPressed: () {
+              //             showDialog(
+              //               context: context,
+              //               builder: (BuildContext context) => TodoModal(
+              //                 type: 'Delete',
+              //                 item: todo,
+              //               ),
+              //             );
+              //           },
+              //           icon: const Icon(Icons.delete_outlined),
+              //         )
+              //       ],
+              //     ),
+              //   ),
+              // );
+            }),
+          );
+        },
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           // showDialog(
@@ -123,25 +129,25 @@ class _OrganizationPageState extends State<OrganizationPage> {
           //     .read<DonationListProvider>()
           //     .updateStatus("rXoXxDLGvSofgG1IRlH4", "completed");
 
-          // // Link DONATION to DONATION DRIVE
-          // File? photo = await pickImageFromGallery();
-
           // UPDATE ORGANIZATION status
-          await context
-              .read<OrgListProvider>()
-              .updateStatus("GCGt6AMZLTHbzlWdWXse", true);
+          // await context
+          //     .read<OrgListProvider>()
+          //     .updateStatus("GCGt6AMZLTHbzlWdWXse", true);
 
           // CREATE DONATION DRIVE
           // Drive drive = Drive(
           //     dateCreated: DateTime.now(),
-          //     name: "UPLB Mental Health Care",
-          //     description: "Help struggling students find the joy in studying",
-          //     contact: "09090909090",
-          //     email: "legacy@gmail.com",
-          //     orgId: "GCGt6AMZLTHbzlWdWXse");
+          //     name: "Typhoon Aghon",
+          //     description: "Help victims",
+          //     contact: org.contact,
+          //     email: org.email,
+          //     orgId: org.id!);
           // await context.read<DriveListProvider>().addDrive(drive);
 
-          // await context.read<DonationListProvider>().linkDrive(
+          // // Link DONATION to DONATION DRIVE
+          // File? photo = await pickImageFromGallery();
+
+          // await context.read<DonationListProvider>().confirmDonation(
           //     "rXoXxDLGvSofgG1IRlH4", "X8SHToo4sH9pJSLkL3AG", photo!);
 
           // UPDATE DONATION DRIVE

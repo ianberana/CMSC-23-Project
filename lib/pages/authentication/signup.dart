@@ -341,10 +341,17 @@ class _SignUpState extends State<SignUpPage> {
                 backgroundColor: MaterialStateProperty.all<Color>(
                     Color.fromARGB(255, 52, 199, 59))),
             onPressed: () async {
-              if (_formKey.currentState!.validate() &&
-                  proofOfLegitimacyFile != null) {
+              if (_formKey.currentState!.validate()) {
                 _formKey.currentState!.save();
 
+                String message = await context
+                    .read<UserAuthProvider>()
+                    .authService
+                    .signUp(email!, password!);
+
+                if (message != "Successfully signed up new user.") return;
+
+                String id;
                 if (isOrganization) {
                   Organization org = Organization(
                       dateCreated: DateTime.now(),
@@ -353,9 +360,9 @@ class _SignUpState extends State<SignUpPage> {
                       contact: contactController.text,
                       email: emailController.text,
                       proof: proofOfLegitimacyFile!.path!,
-                      status: true);
+                      status: false);
 
-                  await context
+                  id = await context
                       .read<OrgListProvider>()
                       .addOrganization(org, proofOfLegitimacyFile!);
                 } else {
@@ -364,18 +371,14 @@ class _SignUpState extends State<SignUpPage> {
                       address: addressController.text,
                       contact: contactController.text,
                       email: emailController.text);
-                  await context.read<DonorListProvider>().addDonor(donor);
+                  id = await context.read<DonorListProvider>().addDonor(donor);
                 }
 
                 User user = User(
+                    id: id,
                     email: emailController.text,
                     type: isOrganization ? "organization" : "user");
                 await context.read<UserProvider>().addUser(user);
-
-                await context
-                    .read<UserAuthProvider>()
-                    .authService
-                    .signUp(email!, password!);
 
                 // check if the widget hasn't been disposed of after an asynchronous action
                 if (mounted) Navigator.pop(context);

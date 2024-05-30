@@ -6,27 +6,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DonationListProvider with ChangeNotifier {
   late FirebaseDonationAPI firebaseService;
-  late Stream<QuerySnapshot> donationStream;
-  // Donation? currentDonation;
 
   DonationListProvider() {
     firebaseService = FirebaseDonationAPI();
-    fetchDonations();
   }
 
-  // getter
-  Stream<QuerySnapshot> get getDonation => donationStream;
-  // Donation get current => currentDonation!;
-
-  // changeCurrentUser(Donation donation) {
-  //   currentDonation = donation;
-  // }
-
-  void fetchDonations() {
-    donationStream = firebaseService.getAllDonations();
-    notifyListeners();
-  }
-
+  // FOR DONOR
   Future<void> addDonation(Donation donation, File photo) async {
     String message =
         await firebaseService.addDonation(donation.toJson(donation), photo);
@@ -34,15 +19,36 @@ class DonationListProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateStatus(String id, String status) async {
-    String message = await firebaseService.updateStatus(id, status);
+  Stream<QuerySnapshot> getDonorDonations(String donorId) {
+    Stream<QuerySnapshot> donationStream =
+        firebaseService.getDonorDonations(donorId);
+    notifyListeners();
+    return donationStream;
+  }
+
+  Future<void> cancelDonation(String id) async {
+    String message = await firebaseService.cancelDonation(id);
     print(message);
     notifyListeners();
   }
 
-  Future<void> linkDrive(String id, String driveId, File photo) async {
-    String message = await firebaseService.linkDrive(id, driveId, photo);
+  // FOR ORGANIZATION
+  Future<void> confirmDonation(String id, bool status) async {
+    String message = await firebaseService.confirmDonation(id, status);
     print(message);
     notifyListeners();
+  }
+
+  Future<void> completeDonation(String id, String driveId, File photo) async {
+    String message = await firebaseService.completeDonation(id, driveId, photo);
+    print(message);
+    notifyListeners();
+  }
+
+  // FOR ORGANIZATION/ADMIN
+  Stream<QuerySnapshot> getOrgDonations(String orgId) {
+    Stream<QuerySnapshot> donationStream =
+        firebaseService.getOrgDonations(orgId);
+    return donationStream;
   }
 }

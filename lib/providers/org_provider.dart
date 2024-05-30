@@ -6,36 +6,52 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class OrgListProvider with ChangeNotifier {
   late FirebaseOrgAPI firebaseService;
-  late Stream<QuerySnapshot> orgStream;
-  Organization? currentOrg;
+  late Stream<QuerySnapshot> orgStream; // FOR DONORS/ADMIN
+  Organization? org; // FOR ORGANIZATION
 
   OrgListProvider() {
     firebaseService = FirebaseOrgAPI();
-    fetchOrganizations();
+    setAllOrganizations(); // FOR DONORS
   }
 
   // getter
-  Stream<QuerySnapshot> get getOrganizations => orgStream;
-  Organization get current => currentOrg!;
+  Stream<QuerySnapshot> get getAllOrganizations =>
+      orgStream; // FOR DONORS/ADMIN
+  Organization? get currentOrg => org; // FOR ORGANIZATION
 
-  changeCurrentOrganization(Organization org) {
-    currentOrg = org;
+  // FOR SIGNUP/AUTHENTICATION
+  Future<String> addOrganization(Organization org, PlatformFile proof) async {
+    String id = await firebaseService.addOrganization(org.toJson(org), proof);
+    notifyListeners();
+    return id;
   }
 
-  void fetchOrganizations() {
-    orgStream = firebaseService.getAllOrganizations();
+  // FOR ORGANIZATION
+  Future<void> setCurrentOrg(String orgId) async {
+    org = Organization.fromJson(await firebaseService.getCurrentOrg(orgId));
     notifyListeners();
   }
 
-  Future<void> addOrganization(Organization org, PlatformFile proof) async {
-    String message =
-        await firebaseService.addOrganization(org.toJson(org), proof);
+  Future<void> updateStatus(bool status) async {
+    if (org!.status && status)
+      print("Organization is already open.");
+    else if (!(org!.status) && !status)
+      print("Organization is already closed.");
+
+    String message = await firebaseService.updateStatus(org!.id!, status);
     print(message);
     notifyListeners();
   }
 
-  Future<void> updateStatus(String id, bool status) async {
-    String message = await firebaseService.updateStatus(id, status);
+  // FOR DONORS/ADMIN
+  void setAllOrganizations() {
+    orgStream = firebaseService.getAllOrganizations();
+    notifyListeners();
+  }
+
+  // FOR ADMIN
+  Future<void> approveOrganization(String id) async {
+    String message = await firebaseService.approveOrganization(id);
     print(message);
     notifyListeners();
   }

@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class UserProvider with ChangeNotifier {
   late FirebaseUserAPI firebaseService;
   late Stream<QuerySnapshot> userStream;
+  String? usertype;
 
   UserProvider() {
     firebaseService = FirebaseUserAPI();
@@ -14,6 +15,9 @@ class UserProvider with ChangeNotifier {
 
   // getter
   Stream<QuerySnapshot> get getUserTypes => userStream;
+  Stream<QuerySnapshot> getUser(String email) {
+    return firebaseService.getUser(email);
+  }
 
   void fetchUsers() {
     userStream = firebaseService.getAllUsers();
