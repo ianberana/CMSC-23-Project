@@ -12,9 +12,9 @@ class DonationListProvider with ChangeNotifier {
   }
 
   // FOR DONOR
-  Future<void> addDonation(Donation donation, File photo) async {
+  Future<void> addDonation(Donation donation) async {
     String message =
-        await firebaseService.addDonation(donation.toJson(donation), photo);
+        await firebaseService.addDonation(donation.toJson(donation));
     print(message);
     notifyListeners();
   }

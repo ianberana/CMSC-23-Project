@@ -1,7 +1,10 @@
+import 'package:elbi_donate/providers/auth_provider.dart';
 import 'package:elbi_donate/providers/donation_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 //import 'package:intl/intl_standalone.dart';
 //import '../../providers/auth_provider.dart';
@@ -19,9 +22,18 @@ class _DonorPageState extends State<DonorPage> {
   File? photo;
   DateTime? selectedDate;
   TimeOfDay? selectedTime;
+  User? user;
+
+  final deliveryController = TextEditingController();
+  final weightController = TextEditingController();
+  final dateController = TextEditingController();
+  final timeController = TextEditingController();
+  final addressController = TextEditingController();
+  final contactController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    user = context.read<UserAuthProvider>().user;
     return Scaffold(
       drawer: DonorDrawer(),
       appBar: AppBar(
@@ -92,6 +104,7 @@ class _DonorPageState extends State<DonorPage> {
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
+        dateController.text = DateFormat('yyyy-MM-dd').format(picked);
       });
     }
   }
@@ -104,6 +117,7 @@ class _DonorPageState extends State<DonorPage> {
     if (picked != null && picked != selectedTime) {
       setState(() {
         selectedTime = picked;
+        timeController.text = picked.format(context);
       });
     }
   }
@@ -114,13 +128,6 @@ class _DonorPageState extends State<DonorPage> {
 
     // Initialize a list to hold the selected items
     List<String> selectedItems = [];
-
-    final deliveryController = TextEditingController();
-    final weightController = TextEditingController();
-    final dateController = TextEditingController();
-    final timeController = TextEditingController();
-    final addressController = TextEditingController();
-    final contactController = TextEditingController();
 
     File? selectedPhoto;
 
@@ -252,15 +259,17 @@ class _DonorPageState extends State<DonorPage> {
                       dateDelivery: deliveryDateTime ?? DateTime.now(),
                       address: [addressController.text],
                       contact: contactController.text,
-                      donorId: "VLYloaQO4QwZS8Ve0ouE",
+                      donorId: user!.uid,
                       orgId: '',
                       photo: "",
                     );
 
+                    print("huhhh");
+
                     // Add the donation to your provider
                     await context
                         .read<DonationListProvider>()
-                        .addDonation(donation, selectedPhoto!);
+                        .addDonation(donation);
                     // Close the dialog
                     Navigator.pop(context);
                   },

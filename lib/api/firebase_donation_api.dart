@@ -11,7 +11,7 @@ class FirebaseDonationAPI {
   // }
 
   // FOR DONORS
-  Future<String> addDonation(Map<String, dynamic> donation, File photo) async {
+  Future<String> addDonation(Map<String, dynamic> donation) async {
     try {
       final donationRef = await db.collection("donations").add(donation);
       await db
@@ -19,16 +19,16 @@ class FirebaseDonationAPI {
           .doc(donationRef.id)
           .update({'id': donationRef.id});
 
-      final photoRef = await storage.ref().child("donation/${donationRef.id}");
+      // final photoRef = await storage.ref().child("donation/${donationRef.id}");
 
-      UploadTask upload = photoRef.putFile(photo);
-      final snapshot = await upload.whenComplete(() {});
+      // UploadTask upload = photoRef.putFile(photo);
+      // final snapshot = await upload.whenComplete(() {});
 
-      String url = await snapshot.ref.getDownloadURL();
-      await db
-          .collection("donations")
-          .doc(donationRef.id)
-          .update({'photo': url});
+      // String url = await snapshot.ref.getDownloadURL();
+      // await db
+      //     .collection("donations")
+      //     .doc(donationRef.id)
+      //     .update({'photo': url});
 
       return "Successfully added donation!";
     } on FirebaseException catch (e) {

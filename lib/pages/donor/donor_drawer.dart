@@ -1,3 +1,4 @@
+import 'package:elbi_donate/pages/donor/donor_donations.dart';
 import 'package:elbi_donate/pages/donor/donor_page.dart';
 import 'package:elbi_donate/pages/donor/donor_profile.dart';
 import 'package:elbi_donate/providers/auth_provider.dart';
@@ -36,6 +37,17 @@ class DonorDrawer extends StatelessWidget {
 
           ListTile(
             leading: Icon(Icons.account_circle),
+            title: Text('Donations'),
+            onTap: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => DonationListPage()),
+              );
+            },
+          ),
+
+          ListTile(
+            leading: Icon(Icons.account_circle),
             title: Text('Profile'),
             onTap: () {
               Navigator.pushReplacement(
@@ -44,6 +56,7 @@ class DonorDrawer extends StatelessWidget {
               );
             },
           ),
+          
           ListTile(
           title: const Text('Logout'),
           onTap: () {
