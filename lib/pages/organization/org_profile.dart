@@ -1,19 +1,37 @@
+import 'package:elbi_donate/models/org_model.dart';
 import 'package:elbi_donate/pages/organization/org_drawer.dart';
+import 'package:elbi_donate/providers/org_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 
-class OrganizationProfile extends StatelessWidget {
+class OrganizationProfile extends StatefulWidget {
+  @override
+  _OrganizationProfileState createState() => _OrganizationProfileState();
+}
+
+class _OrganizationProfileState extends State<OrganizationProfile> {
+  bool isDonationOpen = true;
+
+  void toggleDonationStatus() async {
+    setState(() {
+      isDonationOpen = !isDonationOpen;
+    });
+
+    await context.read<OrgListProvider>().updateStatus(isDonationOpen);
+  }
+
   @override
   Widget build(BuildContext context) {
+    Organization? org = context.watch<OrgListProvider>().currentOrg;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Organization Details'),
+        title: Text('Profile',
+            style: TextStyle(color: Colors.white, fontSize: 20)),
         backgroundColor: Color(0xFF008080),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
+        iconTheme: IconThemeData(
+          color: Colors.white, // Change this to the desired color
         ),
       ),
       drawer: OrgDrawer(),
@@ -32,7 +50,7 @@ class OrganizationProfile extends StatelessWidget {
               ),
               SizedBox(height: 16),
               Text(
-                'Alarcon Organization',
+                org!.name,
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 8),
@@ -44,21 +62,15 @@ class OrganizationProfile extends StatelessWidget {
                     style: TextStyle(fontSize: 16),
                   ),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: toggleDonationStatus,
                     style: TextButton.styleFrom(
-                      backgroundColor: Colors.green[100],
+                      backgroundColor: isDonationOpen ? Color(0xFF008080) : Color.fromARGB(
+                                                  255, 187, 57, 47)
                     ),
                     child: Text(
-                      'Open',
-                      style: TextStyle(color: Colors.green),
+                      isDonationOpen ? 'Open' : 'Close',
+                      style: TextStyle(color: isDonationOpen ? Colors.white : Colors.white),
                     ),
-                  ),
-                  TextButton(
-                    onPressed: () {},
-                    style: TextButton.styleFrom(
-                      backgroundColor: Colors.grey[300],
-                    ),
-                    child: Text('Close'),
                   ),
                 ],
               ),
