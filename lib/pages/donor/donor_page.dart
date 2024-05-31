@@ -24,6 +24,7 @@ class _DonorPageState extends State<DonorPage> {
       drawer: DonorDrawer(),
       appBar: AppBar(
         title: const Text("Donors Page"),
+        backgroundColor: Color(0xFF008080),
       ),
       body: ListView(
         children: [
@@ -92,9 +93,20 @@ class _DonorPageState extends State<DonorPage> {
     final addressController = TextEditingController();
     final contactController = TextEditingController();
 
+    File? selectedPhoto;
+
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
+        Future<void> pickImage() async {
+              final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+              if (image != null) {
+                setState(() {
+                  selectedPhoto = File(image.path);
+                });
+              }
+            }
+
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return SingleChildScrollView(
@@ -157,24 +169,31 @@ class _DonorPageState extends State<DonorPage> {
                       decoration: InputDecoration(labelText: "Contact Number (for pickup option only)"),
                       keyboardType: TextInputType.number,
                     ),
+                    SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: pickImage,
+                      child: Text("Upload Photo"),
+                    ),
+                    if (selectedPhoto != null) ...[
+                      SizedBox(height: 10),
+                      Image.file(selectedPhoto!),
+                    ],
                     ElevatedButton(
                       onPressed: () async {
-                        
-                        //Implement donation submission logic here
                         Donation donation = Donation(
                           dateCreated: DateTime.now(),
-                          item: selectedItems, // Assuming you have an `items` field in your Donation model
-                          delivery: deliveryController.text, // Retrieve the actual value from the form field
-                          weight: double.parse(weightController.text), // Retrieve the actual value from the form field
-                          dateDelivery: DateTime.now(), // Retrieve the actual value from the form field
-                          address: [addressController.text], // Retrieve the actual value from the form field
-                          contact: contactController.text, // Retrieve the actual value from the form field
+                          item: selectedItems, 
+                          delivery: deliveryController.text, 
+                          weight: double.parse(weightController.text), 
+                          dateDelivery: DateTime.parse(dateTimeController.text), 
+                          address: [addressController.text], 
+                          contact: contactController.text, 
                           donorId: "VLYloaQO4QwZS8Ve0ouE", 
                           orgId: '',
                         );
 
                         // // Add the donation to your provider
-                        context.read<DonationListProvider>().addDonation(donation, photo!);
+                        await context.read<DonationListProvider>().addDonation(donation, selectedPhoto!);
 
                         // Close the bottom sheet
                         Navigator.pop(context);
