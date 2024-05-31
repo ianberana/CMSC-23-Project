@@ -86,23 +86,6 @@ class OrgDonationDrive extends StatelessWidget {
                         children: [
                           SizedBox(height: 3),
                           Text('${formatTimestamp(drive.dateCreated)}'),
-                          // SizedBox(height: 3),
-                          // GestureDetector(
-                          //   onTap: () {
-                          //     Navigator.push(
-                          //       context,
-                          //       MaterialPageRoute(
-                          //           builder: (context) => OrgDonationDetails()),
-                          //     );
-                          //   },
-                          //   child: const Text(
-                          //     'Donation Details >',
-                          //     style: TextStyle(
-                          //       color: Color(0xFF008080),
-                          //       fontWeight: FontWeight.bold,
-                          //     ),
-                          //   ),
-                          // ),
                         ],
                       ),
                       trailing: Wrap(
