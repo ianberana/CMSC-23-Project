@@ -6,7 +6,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 class Donation {
   String? id;
   DateTime dateCreated;
-  String item;
+  List item;
   String delivery;
   double weight;
   String? photo;
