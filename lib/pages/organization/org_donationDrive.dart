@@ -6,6 +6,7 @@ import 'package:elbi_donate/pages/organization/org_donationDriveDetails.dart';
 import 'package:elbi_donate/pages/organization/org_drawer.dart';
 import 'package:elbi_donate/pages/organization/org_page.dart';
 import 'package:elbi_donate/providers/drive_provider.dart';
+import 'package:elbi_donate/providers/org_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -22,8 +23,8 @@ class OrgDonationDrive extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Stream<QuerySnapshot> driveStream =
-        context.watch<DriveListProvider>().getDonor;
+    final orgListProvider = context.read<OrgListProvider>();
+    final orgId = orgListProvider.currentOrg?.id;
     return Scaffold(
       appBar: AppBar(
         title: Text('Donation Drive',
@@ -37,7 +38,7 @@ class OrgDonationDrive extends StatelessWidget {
       body: Container(
         color: Color(0xFF008080),
         child: StreamBuilder(
-          stream: driveStream,
+          stream: context.read<DriveListProvider>().getOrgDrives(orgId!),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return Center(
@@ -84,24 +85,24 @@ class OrgDonationDrive extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(height: 3),
-                          Text('${formatTimestamp(drive.date)}'),
-                          SizedBox(height: 3),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => OrgDonationDetails()),
-                              );
-                            },
-                            child: const Text(
-                              'Donation Details >',
-                              style: TextStyle(
-                                color: Color(0xFF008080),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
+                          Text('${formatTimestamp(drive.dateCreated)}'),
+                          // SizedBox(height: 3),
+                          // GestureDetector(
+                          //   onTap: () {
+                          //     Navigator.push(
+                          //       context,
+                          //       MaterialPageRoute(
+                          //           builder: (context) => OrgDonationDetails()),
+                          //     );
+                          //   },
+                          //   child: const Text(
+                          //     'Donation Details >',
+                          //     style: TextStyle(
+                          //       color: Color(0xFF008080),
+                          //       fontWeight: FontWeight.bold,
+                          //     ),
+                          //   ),
+                          // ),
                         ],
                       ),
                       trailing: Wrap(
@@ -139,9 +140,7 @@ class OrgDonationDrive extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => OrgDonationDriveDetails(
-                                    drive: drive,
-                                  )),
+                              builder: (context) => OrgDonationDriveDetails(drive: drive)),
                         );
                       },
                     ),
