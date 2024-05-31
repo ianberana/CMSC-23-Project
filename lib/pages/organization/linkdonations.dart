@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LinkDonationsPage extends StatelessWidget {
-  final Drive driveItem;  // Adjust the type as necessary
+  final Drive driveItem; 
 
   LinkDonationsPage({required this.driveItem});
 
@@ -34,98 +34,99 @@ class LinkDonationsPage extends StatelessWidget {
           } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return Center(child: Text('No confirmed donations found'));
           } else {
+
             return ListView.builder(
               itemCount: snapshot.data?.docs.length,
               itemBuilder: (context, index) {
-                var doc = snapshot.data!.docs[index];
-                Donation donation =
-                    Donation.fromJson(doc.data() as Map<String, dynamic>);
-                donation.id = doc.id;
+                Donation donation = Donation.fromJson(
+                    snapshot.data?.docs[index].data() as Map<String, dynamic>);
+                donation.id = snapshot.data?.docs[index].id;
 
-                return FutureBuilder<Donor>(
-                  future: context
-                      .read<DonationListProvider>()
-                      .getDonorDetails(donation.donorId),
-                  builder: (context, donorSnapshot) {
-                    if (donorSnapshot.connectionState == ConnectionState.waiting) {
-                      return CircularProgressIndicator();
-                    } else if (donorSnapshot.hasError) {
-                      return Text("Error: ${donorSnapshot.error}");
-                    } else if (!donorSnapshot.hasData) {
-                      return Text("Donor not found");
-                    }
+                if (donation.status == "confirmed" ||
+                    donation.status == "scheduled") {
+                  return FutureBuilder<Donor>(
+                    future: context
+                        .read<DonationListProvider>()
+                        .getDonorDetails(donation.donorId),
+                    builder: (context, donorSnapshot) {
+                      if (donorSnapshot.connectionState ==
+                          ConnectionState.waiting) {
+                        return CircularProgressIndicator();
+                      } else if (donorSnapshot.hasError) {
+                        return Text("Error: ${donorSnapshot.error}");
+                      } else if (!donorSnapshot.hasData) {
+                        return Text("Donor not found");
+                      }
 
-                    Donor donor = donorSnapshot.data!;
+                      Donor donor = donorSnapshot.data!;
 
-                    return Card(
-                      color: Color(0xFF008080),
-                      margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
-                      child: ListTile(
-                        title: Row(
-                          children: [
-                            Flexible(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    '${donor.name}',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20.0,
+                      return Card(
+                        color: Color(0xFF008080),
+                        margin:
+                            EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
+                        child: ListTile(
+                          title: Row(
+                            children: [
+                              Flexible(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      '${donor.name}',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20.0,
+                                      ),
                                     ),
-                                  ),
-                                  SizedBox(height: 5.0),
-                                  Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.phone_callback,
-                                        size: 16.0,
-                                      ),
-                                      SizedBox(width: 4.0),
-                                      Text('${donor.contact}'),
-                                    ],
-                                  ),
-                                  SizedBox(height: 3.0),
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.access_time,
-                                        size: 16.0,
-                                      ),
-                                      SizedBox(width: 4.0),
-                                      Text('${donation.dateCreated}'),
-                                    ],
-                                  ),
-                                ],
+                                    SizedBox(height: 5.0),
+                                    Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.phone_callback,
+                                          size: 16.0,
+                                        ),
+                                        SizedBox(width: 4.0),
+                                        Text('${donor.contact}'),
+                                      ],
+                                    ),
+                                    SizedBox(height: 3.0),
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.access_time,
+                                          size: 16.0,
+                                        ),
+                                        SizedBox(width: 4.0),
+                                        Text('${donation.dateCreated}'),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                            ElevatedButton(
-                              onPressed: () async {
-                                await context
-                                    .read<DonationListProvider>()
-                                    .confirmDonation(doc.id, driveItem.id!);
-                                Navigator.pop(context);
-                                await context
-                                    .read<DonationListProvider>()
-                                    .completeDonation(doc.id, driveItem.id!);
-                                Navigator.pop(context);
-                              },
-                              child: Text('Link'),
-                            ),
-                          ],
+                              ElevatedButton(
+                                onPressed: () async {
+                                  await context
+                                      .read<DonationListProvider>()
+                                      .completeDonation(donation.id!, driveItem.id!);
+                                  Navigator.pop(context);
+                                },
+                                child: Text('Link'),
+                              ),
+                            ],
+                          ),
+                          // onTap: () {
+                          //   Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //       builder: (context) => OrgDonationDetails(donation_: donation),
+                          //     ),
+                          //   );
+                          // },
                         ),
-                        // onTap: () {
-                        //   Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //       builder: (context) => OrgDonationDetails(donation_: donation),
-                        //     ),
-                        //   );
-                        // },
-                      ),
-                    );
-                  },
-                );
+                      );
+                    },
+                  );
+                }
               },
             );
           }
