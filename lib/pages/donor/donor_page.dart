@@ -95,36 +95,27 @@ class _DonorPageState extends State<DonorPage> {
 
     File? selectedPhoto;
 
-    showModalBottomSheet(
+    showDialog(
       context: context,
       builder: (BuildContext context) {
         Future<void> pickImage() async {
-              final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-              if (image != null) {
-                setState(() {
-                  selectedPhoto = File(image.path);
-                });
-              }
-            }
+          final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+          if (image != null) {
+            setState(() {
+              selectedPhoto = File(image.path);
+            });
+          }
+        }
 
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
-            return SingleChildScrollView(
-              child: Container(
-                padding: EdgeInsets.all(20),
+            return AlertDialog(
+              title: Text("Donate to Organization"),
+              content: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      "Donate to Organization",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: 20),
                     // Checkbox group for donation items
                     for (String item in donationItems)
                       CheckboxListTile(
@@ -178,31 +169,41 @@ class _DonorPageState extends State<DonorPage> {
                       SizedBox(height: 10),
                       Image.file(selectedPhoto!),
                     ],
-                    ElevatedButton(
-                      onPressed: () async {
-                        Donation donation = Donation(
-                          dateCreated: DateTime.now(),
-                          item: selectedItems, 
-                          delivery: deliveryController.text, 
-                          weight: double.parse(weightController.text), 
-                          dateDelivery: DateTime.parse(dateTimeController.text), 
-                          address: [addressController.text], 
-                          contact: contactController.text, 
-                          donorId: "VLYloaQO4QwZS8Ve0ouE", 
-                          orgId: '',
-                        );
-
-                        // // Add the donation to your provider
-                        await context.read<DonationListProvider>().addDonation(donation, selectedPhoto!);
-
-                        // Close the bottom sheet
-                        Navigator.pop(context);
-                      },
-                      child: Text("Submit"),
-                    ),
                   ],
                 ),
               ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text("Cancel"),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    Donation donation = Donation(
+                      dateCreated: DateTime.now(),
+                      item: selectedItems,
+                      delivery: deliveryController.text,
+                      weight: double.parse(weightController.text),
+                      dateDelivery: DateTime.parse(dateTimeController.text),
+                      address: [addressController.text],
+                      contact: contactController.text,
+                      donorId: "VLYloaQO4QwZS8Ve0ouE",
+                      orgId: '',
+                      photo: "",
+                    );
+                    print(donation);
+
+                    // Add the donation to your provider
+                    await context.read<DonationListProvider>().addDonation(donation, selectedPhoto!);
+                    print("huh");
+                    // Close the dialog
+                    Navigator.pop(context);
+                  },
+                  child: Text("Submit"),
+                ),
+              ],
             );
           },
         );

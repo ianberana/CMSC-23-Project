@@ -3,6 +3,7 @@
   Date: updated May 27, 2024
   Description: Elbi Donation System 
 */
+import 'package:elbi_donate/providers/donation_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -29,6 +30,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: ((context) => DonorListProvider())),
         ChangeNotifierProvider(create: ((context) => OrgListProvider())),
         ChangeNotifierProvider(create: ((context) => ProofProvider())),
+        ChangeNotifierProvider(create: ((context) => DonationListProvider()))
       ],
       child: MyApp(),
     ),
