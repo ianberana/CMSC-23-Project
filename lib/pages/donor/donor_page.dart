@@ -125,7 +125,7 @@ class _DonorPageState extends State<DonorPage> {
 
           Donation donation = Donation(
             dateCreated: DateTime.now(),
-            item: "food",
+            item: ["food"],
             delivery: "pickup",
             weight: 20,
             dateDelivery: DateTime.now(),
