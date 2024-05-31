@@ -30,7 +30,7 @@ class FirebaseDonationAPI {
           .doc(donationRef.id)
           .update({'photo': url});
 
-      return "Successfully added donation!";
+      return donationRef.id;
     } on FirebaseException catch (e) {
       return "Failed with error '${e.code}: ${e.message}";
     }
