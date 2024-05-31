@@ -5,30 +5,34 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DonorListProvider with ChangeNotifier {
   late FirebaseDonorAPI firebaseService;
-  late Stream<QuerySnapshot> donorStream;
-  Donor? currentDonor;
+  late Stream<QuerySnapshot> donorStream; // FOR ADMIN
+  Donor? donor; // FOR DONOR
 
   DonorListProvider() {
     firebaseService = FirebaseDonorAPI();
-    fetchDonors();
+    setAllDonors(); // FOR ADMIN
   }
 
   // getter
-  Stream<QuerySnapshot> get getDonor => donorStream;
-  Donor get current => currentDonor!;
+  Stream<QuerySnapshot> get getAllDonors => donorStream; // FOR ADMIN
+  Donor? get currentDonor => donor; // FOR DONOR
 
-  changeCurrentUser(Donor donor) {
-    currentDonor = donor;
+  // FOR SIGNUP/AUTHENTICATION
+  Future<String> addDonor(Donor donor) async {
+    String id = await firebaseService.addDonor(donor.toJson(donor));
+    notifyListeners();
+    return id;
   }
 
-  void fetchDonors() {
-    donorStream = firebaseService.getAllDonors();
+  // FOR DONOR
+  Future<void> setCurrentDonor(String donorId) async {
+    donor = Donor.fromJson(await firebaseService.getCurrentDonor(donorId));
     notifyListeners();
   }
 
-  Future<void> addDonor(Donor donor) async {
-    String message = await firebaseService.addDonor(donor.toJson(donor));
-    print(message);
+  // FOR ADMIN
+  void setAllDonors() {
+    donorStream = firebaseService.getAllDonors();
     notifyListeners();
   }
 }

@@ -1,6 +1,4 @@
-//import 'dart:io';
-
-import 'package:elbi_donate/providers/proof_provider.dart';
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -343,42 +341,45 @@ class _SignUpState extends State<SignUpPage> {
                 backgroundColor: WidgetStateProperty.all<Color>(
                     Color.fromARGB(255, 52, 199, 59))),
             onPressed: () async {
-              if (_formKey.currentState!.validate()) { // && proofOfLegitimacyFile != null
+              if (_formKey.currentState!.validate() &&
+                  proofOfLegitimacyFile != null) {
                 _formKey.currentState!.save();
 
+                String message = await context
+                    .read<UserAuthProvider>()
+                    .authService
+                    .signUp(email!, password!);
+
+                if (message != "Successfully signed up new user.") return;
+
+                String id;
                 if (isOrganization) {
                   Organization org = Organization(
+                      dateCreated: DateTime.now(),
                       name: nameController.text,
                       address: addressController.text,
                       contact: contactController.text,
                       email: emailController.text,
-                      proof: proofOfLegitimacyFile!.path!);
+                      proof: proofOfLegitimacyFile!.path!,
+                      status: false);
 
-                  String id = await context
+                  id = await context
                       .read<OrgListProvider>()
-                      .addOrganization(org);
-                  String url = await context
-                      .read<ProofProvider>()
-                      .uploadProof(proofOfLegitimacyFile!, id);
-                  await context.read<OrgListProvider>().addProof(id, url);
+                      .addOrganization(org, proofOfLegitimacyFile!);
                 } else {
                   Donor donor = Donor(
                       name: nameController.text,
                       address: addressController.text,
                       contact: contactController.text,
                       email: emailController.text);
-                  await context.read<DonorListProvider>().addDonor(donor);
+                  id = await context.read<DonorListProvider>().addDonor(donor);
                 }
 
                 User user = User(
+                    id: id,
                     email: emailController.text,
                     type: isOrganization ? "organization" : "user");
                 await context.read<UserProvider>().addUser(user);
-
-                await context
-                    .read<UserAuthProvider>()
-                    .authService
-                    .signUp(email!, password!);
 
                 // check if the widget hasn't been disposed of after an asynchronous action
                 if (mounted) Navigator.pop(context);

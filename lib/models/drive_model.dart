@@ -1,7 +1,10 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Drive {
   String? id;
+  DateTime dateCreated;
   String name;
   String description;
   String contact;
@@ -10,6 +13,7 @@ class Drive {
 
   Drive({
     this.id,
+    required this.dateCreated,
     required this.name,
     required this.description,
     required this.contact,
@@ -21,6 +25,7 @@ class Drive {
   factory Drive.fromJson(Map<String, dynamic> json) {
     return Drive(
       id: json['id'],
+      dateCreated: (json['dateCreated'] as Timestamp).toDate(),
       name: json['name'],
       description: json['description'],
       contact: json['contact'],
@@ -36,6 +41,7 @@ class Drive {
 
   Map<String, dynamic> toJson(Drive drive) {
     return {
+      'dateCreated': drive.dateCreated,
       'name': drive.name,
       'description': drive.description,
       'contact': drive.contact,

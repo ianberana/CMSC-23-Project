@@ -78,6 +78,8 @@ class Donation {
       'donorId': donation.donorId,
       'orgId': donation.orgId,
       'driveId': donation.driveId,
+      'drivePhoto': donation.drivePhoto,
+      'driveId': donation.driveId,
       'drivePhoto': donation.drivePhoto
     };
   }
