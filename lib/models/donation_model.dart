@@ -6,7 +6,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 class Donation {
   String? id;
   DateTime dateCreated;
-  String item;
+  List<String> item;
   String delivery;
   double weight;
   String? photo;
@@ -43,12 +43,12 @@ class Donation {
     return Donation(
         id: json['id'],
         dateCreated: (json['dateCreated'] as Timestamp).toDate(),
-        item: json['item'],
+        item: List<String>.from(json['item']),
         delivery: json['delivery'],
         weight: json['weight'],
         photo: json['photo'],
         dateDelivery: (json['dateDelivery'] as Timestamp).toDate(),
-        address: json['address'],
+        address: List<String>.from(json['address']),
         contact: json['contact'],
         status: json['status'],
         qr: json['qr'],
@@ -77,6 +77,8 @@ class Donation {
       'qr': donation.qr,
       'donorId': donation.donorId,
       'orgId': donation.orgId,
+      'driveId': donation.driveId,
+      'drivePhoto': donation.drivePhoto,
       'driveId': donation.driveId,
       'drivePhoto': donation.drivePhoto
     };
