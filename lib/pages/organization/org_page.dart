@@ -14,10 +14,10 @@ import '../../models/donation_model.dart';
 import '../../models/drive_model.dart';
 import '../../models/org_model.dart';
 import '../../providers/auth_provider.dart';
-// import '../../providers/donation_provider.dart';
+import '../../providers/donation_provider.dart';
 import '../../providers/drive_provider.dart';
 import '../../providers/org_provider.dart';
-// import 'org_profile.dart';
+import 'org_profile.dart';
 
 class OrganizationPage extends StatefulWidget {
   const OrganizationPage({super.key});
@@ -35,6 +35,7 @@ class _OrganizationPageState extends State<OrganizationPage> {
     //     context.watch<DriveListProvider>().getOrgDrives(org!.id!);
     Stream<QuerySnapshot> donationStream =
         context.watch<DonationListProvider>().getOrgDonations(org!.id!);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Donations',
@@ -48,7 +49,7 @@ class _OrganizationPageState extends State<OrganizationPage> {
       body: Container(
         color: Color(0xFF008080),
         child: StreamBuilder(
-          stream: donorStream,
+          stream: donationStream,
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return Center(
@@ -67,102 +68,109 @@ class _OrganizationPageState extends State<OrganizationPage> {
             return ListView.builder(
               itemCount: snapshot.data?.docs.length,
               itemBuilder: ((context, index) {
-                Donor donor = Donor.fromJson(
+                Donation donation = Donation.fromJson(
                     snapshot.data?.docs[index].data() as Map<String, dynamic>);
-                donor.id = snapshot.data?.docs[index].id;
+                donation.id = snapshot.data?.docs[index].id;
 
-                return Dismissible(
-                  key: Key(donor.id.toString()),
-                  child: Card(
-                    margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
-                    child: ListTile(
-                      title: Row(
-                        children: [
-                          Flexible(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                return FutureBuilder<Donor>(
+                    future: context
+                        .read<DonationListProvider>()
+                        .getDonorDetails(donation.donorId),
+                    builder: (context, donorSnapshot) {
+                      if (donorSnapshot.connectionState ==
+                          ConnectionState.waiting) {
+                        return CircularProgressIndicator();
+                      } else if (donorSnapshot.hasError) {
+                        return Text("Error: ${donorSnapshot.error}");
+                      } else if (!donorSnapshot.hasData) {
+                        return Text("Donor not found");
+                      }
+
+                      Donor donor = donorSnapshot.data!;
+
+                      return Dismissible(
+                        key: Key(donation.id.toString()),
+                        child: Card(
+                          margin: EdgeInsets.symmetric(
+                              vertical: 8.0, horizontal: 16),
+                          child: ListTile(
+                            title: Row(
                               children: [
-                                Text(
-                                  '${donor.name}',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20.0,
+                                Flexible(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '${donor.name}',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20.0,
+                                        ),
+                                      ),
+                                      SizedBox(height: 5.0),
+                                      Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.phone_callback,
+                                            size: 16.0,
+                                          ),
+                                          SizedBox(width: 4.0),
+                                          Text('${donor.contact}'),
+                                        ],
+                                      ),
+                                      SizedBox(height: 3.0),
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            Icons.access_time,
+                                            size: 16.0,
+                                          ),
+                                          SizedBox(width: 4.0),
+                                          Text('12-02-2020'),
+                                        ],
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                SizedBox(height: 5.0),
-                                Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.phone_callback,
-                                      size: 16.0,
-                                    ),
-                                    SizedBox(width: 4.0),
-                                    Text('${donor.contact}'),
-                                  ],
-                                ),
-                                SizedBox(height: 3.0),
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.access_time,
-                                      size: 16.0,
-                                    ),
-                                    SizedBox(width: 4.0),
-                                    Text('12-02-2020'),
-                                  ],
+                                IntrinsicWidth(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      DropdownButton<String>(
+                                        value: status,
+                                        items: [
+                                          'Pending',
+                                          'Accepted',
+                                          'Completed'
+                                        ].map((status) {
+                                          return DropdownMenuItem<String>(
+                                            value: status,
+                                            child: Text(status),
+                                          );
+                                        }).toList(),
+                                        onChanged: (newStatus) {
+                                          setState(() {
+                                            status = newStatus!;
+                                          });
+                                        },
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => OrgDonationDetails(donation_: donation)),
+                              );
+                            },
                           ),
-                          IntrinsicWidth(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                DropdownButton<String>(
-                                  value: status,
-                                  items: ['Pending', 'Accepted', 'Completed']
-                                      .map((status) {
-                                    return DropdownMenuItem<String>(
-                                      value: status,
-                                      child: Text(status),
-                                    );
-                                  }).toList(),
-                                  onChanged: (newStatus) {
-                                    setState(() {
-                                      status = newStatus!;
-                                    });
-                                  },
-                                ),
-                                ElevatedButton(
-                                  onPressed: () {},
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Color(0xFF008080),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 16.0, vertical: 8.0),
-                                  ),
-                                  child: Text(
-                                    'Link Donation',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => OrgDonationDetails()),
-                        );
-                      },
-                    ),
-                  ),
-                );
+                        ),
+                      );
+                    });
               }),
             );
           },
