@@ -11,6 +11,7 @@ import '../../providers/donation_provider.dart';
 import '../../providers/drive_provider.dart';
 import '../../providers/org_provider.dart';
 import 'org_profile.dart';
+import 'org_qr.dart';
 
 class OrganizationPage extends StatefulWidget {
   const OrganizationPage({super.key});
@@ -49,69 +50,73 @@ class _OrganizationPageState extends State<OrganizationPage> {
             );
           }
 
-          return ListView.builder(
-            itemCount: snapshot.data?.docs.length,
-            itemBuilder: ((context, index) {
-              Donation donation = Donation.fromJson(
-                  snapshot.data?.docs[index].data() as Map<String, dynamic>);
-              print(donation.orgId);
-              return ListTile(title: Text(donation.orgId));
-              // todo.id = snapshot.data?.docs[index].id;
-              // return Dismissible(
-              //   key: Key(todo.id.toString()),
-              //   onDismissed: (direction) {
-              //     context.read<TodoListProvider>().deleteTodo(todo.title);
+          // Navigator.push(context,
+          //     MaterialPageRoute(builder: (context) => OrganizationQrPage()));
 
-              //     ScaffoldMessenger.of(context).showSnackBar(
-              //         SnackBar(content: Text('${todo.title} dismissed')));
-              //   },
-              //   background: Container(
-              //     color: Colors.red,
-              //     child: const Icon(Icons.delete),
-              //   ),
-              //   child: ListTile(
-              //     title: Text(todo.title),
-              //     leading: Checkbox(
-              //       value: todo.completed,
-              //       onChanged: (bool? value) {
-              //         context
-              //             .read<TodoListProvider>()
-              //             .toggleStatus(todo.id!, value!);
-              //       },
-              //     ),
-              //     trailing: Row(
-              //       mainAxisSize: MainAxisSize.min,
-              //       children: [
-              //         IconButton(
-              //           onPressed: () {
-              //             showDialog(
-              //               context: context,
-              //               builder: (BuildContext context) => TodoModal(
-              //                 type: 'Edit',
-              //                 item: todo,
-              //               ),
-              //             );
-              //           },
-              //           icon: const Icon(Icons.create_outlined),
-              //         ),
-              //         IconButton(
-              //           onPressed: () {
-              //             showDialog(
-              //               context: context,
-              //               builder: (BuildContext context) => TodoModal(
-              //                 type: 'Delete',
-              //                 item: todo,
-              //               ),
-              //             );
-              //           },
-              //           icon: const Icon(Icons.delete_outlined),
-              //         )
-              //       ],
-              //     ),
-              //   ),
-              // );
-            }),
-          );
+          return Container();
+          // return ListView.builder(
+          //   itemCount: snapshot.data?.docs.length,
+          //   itemBuilder: ((context, index) {
+          //     Donation donation = Donation.fromJson(
+          //         snapshot.data?.docs[index].data() as Map<String, dynamic>);
+          //     print(donation.orgId);
+          //     return ListTile(title: Text(donation.orgId));
+          // todo.id = snapshot.data?.docs[index].id;
+          // return Dismissible(
+          //   key: Key(todo.id.toString()),
+          //   onDismissed: (direction) {
+          //     context.read<TodoListProvider>().deleteTodo(todo.title);
+
+          //     ScaffoldMessenger.of(context).showSnackBar(
+          //         SnackBar(content: Text('${todo.title} dismissed')));
+          //   },
+          //   background: Container(
+          //     color: Colors.red,
+          //     child: const Icon(Icons.delete),
+          //   ),
+          //   child: ListTile(
+          //     title: Text(todo.title),
+          //     leading: Checkbox(
+          //       value: todo.completed,
+          //       onChanged: (bool? value) {
+          //         context
+          //             .read<TodoListProvider>()
+          //             .toggleStatus(todo.id!, value!);
+          //       },
+          //     ),
+          //     trailing: Row(
+          //       mainAxisSize: MainAxisSize.min,
+          //       children: [
+          //         IconButton(
+          //           onPressed: () {
+          //             showDialog(
+          //               context: context,
+          //               builder: (BuildContext context) => TodoModal(
+          //                 type: 'Edit',
+          //                 item: todo,
+          //               ),
+          //             );
+          //           },
+          //           icon: const Icon(Icons.create_outlined),
+          //         ),
+          //         IconButton(
+          //           onPressed: () {
+          //             showDialog(
+          //               context: context,
+          //               builder: (BuildContext context) => TodoModal(
+          //                 type: 'Delete',
+          //                 item: todo,
+          //               ),
+          //             );
+          //           },
+          //           icon: const Icon(Icons.delete_outlined),
+          //         )
+          //       ],
+          //     ),
+          //   ),
+          // );
+          // }),
+          // );
         },
       ),
       floatingActionButton: FloatingActionButton(
