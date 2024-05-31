@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import '../../models/donor_model.dart';
 import '../../models/donation_model.dart';
 import '../../providers/auth_provider.dart';
@@ -19,6 +20,7 @@ class DonorPage extends StatefulWidget {
 
 class _DonorPageState extends State<DonorPage> {
   File? photo;
+  QrImageView? qr;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,8 @@ class _DonorPageState extends State<DonorPage> {
       appBar: AppBar(
         title: const Text("Donors Page"),
       ),
-      body: Container(),
+      body: Container(child: qr != null ? qr as Widget : Text("No qr")),
+      // ),
       // StreamBuilder(
       //   stream: todosStream,
       //   builder: (context, snapshot) {
@@ -121,11 +124,11 @@ class _DonorPageState extends State<DonorPage> {
           // );
 
           // Add static donation
-          File? photo = await pickImageFromGallery();
+          File? photo = await pickImageFromCamera();
 
           Donation donation = Donation(
             dateCreated: DateTime.now(),
-            item: "food",
+            item: ["food"],
             delivery: "pickup",
             weight: 20,
             dateDelivery: DateTime.now(),
@@ -134,9 +137,11 @@ class _DonorPageState extends State<DonorPage> {
             donorId: donor!.id!,
             orgId: "7VI3RQEfEkEeBrJtzMZM",
           );
-          await context
+          String id = await context
               .read<DonationListProvider>()
               .addDonation(donation, photo!);
+
+          setQrImage("7VI3RQEfEkEeBrJtzMZM", id);
         },
         child: const Icon(Icons.add_outlined),
       ),
@@ -161,6 +166,16 @@ class _DonorPageState extends State<DonorPage> {
     } else {
       return File(image.path);
     }
+  }
+
+  void setQrImage(String orgId, String id) {
+    setState(() {
+      qr = QrImageView(
+        data: id,
+        size: 200,
+        backgroundColor: Colors.white,
+      );
+    });
   }
 
   Drawer get drawer => Drawer(

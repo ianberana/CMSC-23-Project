@@ -12,11 +12,11 @@ class DonationListProvider with ChangeNotifier {
   }
 
   // FOR DONOR
-  Future<void> addDonation(Donation donation, File photo) async {
-    String message =
+  Future<String> addDonation(Donation donation, File photo) async {
+    String id =
         await firebaseService.addDonation(donation.toJson(donation), photo);
-    print(message);
     notifyListeners();
+    return id;
   }
 
   Stream<QuerySnapshot> getDonorDonations(String donorId) {
@@ -33,7 +33,7 @@ class DonationListProvider with ChangeNotifier {
   }
 
   // FOR ORGANIZATION
-  Future<void> confirmDonation(String id, bool status) async {
+  Future<void> confirmDonation(String id, String status) async {
     String message = await firebaseService.confirmDonation(id, status);
     print(message);
     notifyListeners();

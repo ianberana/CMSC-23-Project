@@ -30,7 +30,7 @@ class FirebaseDonationAPI {
           .doc(donationRef.id)
           .update({'photo': url});
 
-      return "Successfully added donation!";
+      return donationRef.id;
     } on FirebaseException catch (e) {
       return "Failed with error '${e.code}: ${e.message}";
     }
@@ -71,7 +71,7 @@ class FirebaseDonationAPI {
   }
 
   // FOR ORGANIZATION
-  Future<String> confirmDonation(String id, bool status) async {
+  Future<String> confirmDonation(String id, String status) async {
     QuerySnapshot donations = await db
         .collection("donations")
         .where("id", isEqualTo: id)
