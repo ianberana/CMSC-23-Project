@@ -106,24 +106,6 @@ class OrgDonationDetails extends StatelessWidget {
                                   ),
                                 ),
                                 SizedBox(height: 8.0),
-                                DropdownButton<String>(
-                                  value: donation.status,
-                                  items: ['pending', 'Accepted', 'Completed']
-                                      .map((status) {
-                                    return DropdownMenuItem<String>(
-                                      value: status,
-                                      child: Text(
-                                        status,
-                                        style: TextStyle(
-                                          color: Colors.teal,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                    );
-                                  }).toList(),
-                                  onChanged: (newStatus) {},
-                                ),
                               ],
                             ),
                           ),
@@ -131,7 +113,7 @@ class OrgDonationDetails extends StatelessWidget {
                         SizedBox(height: 16.0),
                         Wrap(
                           spacing: 8.0,
-                          children: donation.item.split(',').map((category) {
+                          children: donation.item.map((category) {
                             return Chip(
                               label: Text(category
                                   .trim()), // Trim to remove leading/trailing whitespace
@@ -212,7 +194,7 @@ class OrgDonationDetails extends StatelessWidget {
                                         ),
                                         SizedBox(height: 4.0),
                                         Text(
-                                          '${donation.weight}',
+                                          '${donation.weight} kg',
                                           style: TextStyle(fontSize: 16.0),
                                         ),
                                       ],
@@ -229,8 +211,18 @@ class OrgDonationDetails extends StatelessWidget {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
+                                        if(donation.delivery == "pickup")
                                         Text(
-                                          'Pickup Time',
+                                          'Pickup Date and Time',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16.0,
+                                          ),
+                                        ),
+                                        SizedBox(height: 4.0),
+                                        if(donation.delivery == "drop off")
+                                        Text(
+                                          'Drop off Date and Time',
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16.0,
@@ -245,7 +237,9 @@ class OrgDonationDetails extends StatelessWidget {
                                     ),
                                   ],
                                 ),
+                                if (donation.delivery == "pickup")
                                 SizedBox(height: 16.0),
+                                if (donation.delivery == "pickup")
                                 Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -288,15 +282,15 @@ class OrgDonationDetails extends StatelessWidget {
                           ),
                         ),
                         SizedBox(height: 16.0),
-                        Text(
-                          'Photos',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16.0,
-                          ),
-                        ),
-                        SizedBox(height: 8.0),
-                        // Add photos widget here
+                        // Text(
+                        //   'Photos',
+                        //   style: TextStyle(
+                        //     fontWeight: FontWeight.bold,
+                        //     fontSize: 16.0,
+                        //   ),
+                        // ),
+                        // SizedBox(height: 8.0),
+                        // // Add photos widget here
                       ],
                     ),
                   ),
