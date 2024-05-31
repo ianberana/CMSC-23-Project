@@ -134,7 +134,7 @@ class DriveModal extends StatelessWidget {
         switch (type) {
           case 'Add':
             {
-              Organization? org = context.watch<OrgListProvider>().currentOrg;
+              Organization? org = context.read<OrgListProvider>().currentOrg;
               Drive temp = Drive(
                 id: '',
                 name: _nameController.text,
