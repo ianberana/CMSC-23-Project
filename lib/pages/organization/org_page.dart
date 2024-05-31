@@ -27,7 +27,36 @@ class OrganizationPage extends StatefulWidget {
 }
 
 class _OrganizationPageState extends State<OrganizationPage> {
-  String status = 'Pending';
+  bool isChecked = false;
+  bool isCancelled = false;
+
+  void toggleCheck(Donation donation) async {
+    if (!isChecked && !isCancelled) {
+      String status =
+          donation.delivery == 'drop off' ? 'confirmed' : 'scheduled';
+
+      setState(() {
+        isChecked = true;
+      });
+
+      await context
+          .read<DonationListProvider>()
+          .confirmDonation(donation.id!, status);
+    }
+  }
+
+  void cancelDonation(Donation donation) async {
+    if (!isCancelled && !isChecked) {
+      setState(() {
+        isCancelled = true;
+      });
+
+      await context
+          .read<DonationListProvider>()
+          .confirmDonation(donation.id!, 'cancelled');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Organization? org = context.watch<OrgListProvider>().currentOrg;
@@ -137,24 +166,62 @@ class _OrganizationPageState extends State<OrganizationPage> {
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      DropdownButton<String>(
-                                        value: status,
-                                        items: [
-                                          'Pending',
-                                          'Accepted',
-                                          'Completed'
-                                        ].map((status) {
-                                          return DropdownMenuItem<String>(
-                                            value: status,
-                                            child: Text(status),
-                                          );
-                                        }).toList(),
-                                        onChanged: (newStatus) {
-                                          setState(() {
-                                            status = newStatus!;
-                                          });
-                                        },
-                                      ),
+                                      if (!isChecked && !isCancelled && donation.status == "pending" )
+                                        ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            foregroundColor: Color(0xFF008080),
+                                            backgroundColor: Color.fromARGB(
+                                                255, 63, 172, 67),
+                                          ),
+                                          onPressed: () =>
+                                              toggleCheck(donation),
+                                          child: Text('Check', style: TextStyle(color: Colors.white)),
+                                        ),
+                                      if (!isChecked && !isCancelled && donation.status == "pending")
+                                        SizedBox(height: 8.0),
+                                      if (!isChecked && !isCancelled && donation.status == "pending")
+                                        ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              foregroundColor: Color.fromARGB(
+                                                  255, 187, 57, 47),
+                                              backgroundColor:
+                                                  const Color.fromARGB(
+                                                      255, 184, 104, 98)),
+                                          onPressed: () =>
+                                              cancelDonation(donation),
+                                          child: Text('Cancel',style: TextStyle(color: Colors.white)),
+                                        ),
+                                      if (isChecked || (!isChecked && donation.status != "pending"))
+                                        ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            foregroundColor: Color(0xFF008080),
+                                            backgroundColor: Color.fromARGB(
+                                                255, 63, 172, 67),
+                                          ),
+                                          onPressed: null,
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text(donation.status),
+                                            ],
+                                          ),
+                                        ),
+                                      if (isCancelled || (!isCancelled && donation.status == "cancelled"))
+                                        ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              foregroundColor: Color.fromARGB(
+                                                  255, 187, 57, 47),
+                                              backgroundColor:
+                                                  const Color.fromARGB(
+                                                      255, 184, 104, 98)),
+                                          onPressed: null,
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text(donation.status), 
+                                            ],
+                                          ),
+                                        ),
                                     ],
                                   ),
                                 ),
@@ -164,7 +231,8 @@ class _OrganizationPageState extends State<OrganizationPage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => OrgDonationDetails(donation_: donation)),
+                                    builder: (context) => OrgDonationDetails(
+                                        donation_: donation)),
                               );
                             },
                           ),
