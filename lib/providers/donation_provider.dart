@@ -1,17 +1,54 @@
 import 'dart:io';
-
-import 'package:elbi_donate/models/donation_model.dart';
 import 'package:flutter/material.dart';
-//import 'package:your_project/models/donation_model.dart';
+import '../api/firebase_donation_api.dart';
+import '../models/donation_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DonationListProvider with ChangeNotifier {
-  List<Donation> _donations = [];
+  late FirebaseDonationAPI firebaseService;
 
-  List<Donation> get donations => _donations;
+  DonationListProvider() {
+    firebaseService = FirebaseDonationAPI();
+  }
 
+  // FOR DONOR
   Future<void> addDonation(Donation donation, File photo) async {
-    // Implement your logic to add the donation, e.g., upload photo and save donation details to a database
-    _donations.add(donation);
+    String message =
+        await firebaseService.addDonation(donation.toJson(donation), photo);
+    print(message);
     notifyListeners();
+  }
+
+  Stream<QuerySnapshot> getDonorDonations(String donorId) {
+    Stream<QuerySnapshot> donationStream =
+        firebaseService.getDonorDonations(donorId);
+    notifyListeners();
+    return donationStream;
+  }
+
+  Future<void> cancelDonation(String id) async {
+    String message = await firebaseService.cancelDonation(id);
+    print(message);
+    notifyListeners();
+  }
+
+  // FOR ORGANIZATION
+  Future<void> confirmDonation(String id, bool status) async {
+    String message = await firebaseService.confirmDonation(id, status);
+    print(message);
+    notifyListeners();
+  }
+
+  Future<void> completeDonation(String id, String driveId, File photo) async {
+    String message = await firebaseService.completeDonation(id, driveId, photo);
+    print(message);
+    notifyListeners();
+  }
+
+  // FOR ORGANIZATION/ADMIN
+  Stream<QuerySnapshot> getOrgDonations(String orgId) {
+    Stream<QuerySnapshot> donationStream =
+        firebaseService.getOrgDonations(orgId);
+    return donationStream;
   }
 }

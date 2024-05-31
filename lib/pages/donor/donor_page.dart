@@ -162,14 +162,15 @@ class _DonorPageState extends State<DonorPage> {
                         
                         //Implement donation submission logic here
                         Donation donation = Donation(
-                          //dateCreated: DateTime.now(),
+                          dateCreated: DateTime.now(),
                           item: selectedItems, // Assuming you have an `items` field in your Donation model
                           delivery: deliveryController.text, // Retrieve the actual value from the form field
                           weight: double.parse(weightController.text), // Retrieve the actual value from the form field
                           dateDelivery: DateTime.now(), // Retrieve the actual value from the form field
                           address: [addressController.text], // Retrieve the actual value from the form field
                           contact: contactController.text, // Retrieve the actual value from the form field
-                          donorId: "VLYloaQO4QwZS8Ve0ouE",
+                          donorId: "VLYloaQO4QwZS8Ve0ouE", 
+                          orgId: '',
                         );
 
                         // // Add the donation to your provider
