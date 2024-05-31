@@ -1,5 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:elbi_donate/models/drive_model.dart';
+import 'package:elbi_donate/models/org_model.dart';
 import 'package:elbi_donate/providers/drive_provider.dart';
 import 'package:elbi_donate/providers/org_provider.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +25,8 @@ class DriveModal extends StatelessWidget {
         return const Text("Edit donation drive");
       case 'Delete':
         return const Text("Delete donation drive");
+      case 'Link Donations':
+        return const Text("Link donation to drive");
       default:
         return const Text("");
     }
@@ -132,14 +134,15 @@ class DriveModal extends StatelessWidget {
         switch (type) {
           case 'Add':
             {
+              Organization? org = context.watch<OrgListProvider>().currentOrg;
               Drive temp = Drive(
                 id: '',
                 name: _nameController.text,
                 description: _descriptionController.text,
                 contact: _contactController.text,
                 email: _emailController.text,
-                orgId: 'a',
-                date: DateTime.now(),
+                orgId: org!.id!,
+                dateCreated: DateTime.now(),
               );
               if (_formKey.currentState!.validate()) {
                 context.read<DriveListProvider>().addDrive(temp);
@@ -159,7 +162,8 @@ class DriveModal extends StatelessWidget {
                   contact: _contactController.text,
                   email: _emailController.text,
                   orgId: driveItem!.orgId,
-                  date: driveItem!.date, // Update the date to the current date
+                  dateCreated: driveItem!
+                      .dateCreated, // Update the date to the current date
                 );
                 context
                     .read<DriveListProvider>()
