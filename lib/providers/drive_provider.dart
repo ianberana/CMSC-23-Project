@@ -5,9 +5,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DriveListProvider with ChangeNotifier {
   late FirebaseDriveAPI firebaseService;
+  Drive? drive;
+
   DriveListProvider() {
     firebaseService = FirebaseDriveAPI();
   }
+
+  Drive? get currentDrive => drive; // FOR ORGANIZATION
 
   // FOR DONOR/ORGANIZATION
   Stream<QuerySnapshot> getOrgDrives(String orgId) {
@@ -15,6 +19,8 @@ class DriveListProvider with ChangeNotifier {
     notifyListeners();
     return driveStream;
   }
+
+
 
   // FOR ORGANIZATION
   Future<void> addDrive(Drive drive) async {

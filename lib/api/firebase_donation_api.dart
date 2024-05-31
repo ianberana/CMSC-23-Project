@@ -30,7 +30,7 @@ class FirebaseDonationAPI {
       //     .doc(donationRef.id)
       //     .update({'photo': url});
 
-      return "Successfully added donation!";
+      return donationRef.id;
     } on FirebaseException catch (e) {
       return "Failed with error '${e.code}: ${e.message}";
     }
@@ -78,7 +78,7 @@ class FirebaseDonationAPI {
   }
 
   // FOR ORGANIZATION
-  Future<String> confirmDonation(String id, bool status) async {
+  Future<String> confirmDonation(String id, String status) async {
     QuerySnapshot donations = await db
         .collection("donations")
         .where("id", isEqualTo: id)
@@ -102,7 +102,44 @@ class FirebaseDonationAPI {
     }
   }
 
-  Future<String> completeDonation(String id, String driveId, File photo) async {
+  // Future<String> completeDonation(String id, String driveId, File photo) async {
+  //   QuerySnapshot donations = await db
+  //       .collection("donations")
+  //       .where("id", isEqualTo: id)
+  //       .limit(1)
+  //       .get();
+  //   if (donations.docs.isNotEmpty) {
+  //     DocumentSnapshot donationRef = donations.docs.first;
+  //     final donation = donationRef.data() as Map<String, dynamic>;
+
+  //     if (donation['status'] == "confirmed" ||
+  //         donation['status'] == "scheduled") {
+  //       try {
+  //         await db
+  //             .collection("donations")
+  //             .doc(id)
+  //             .update({"status": "complete", "driveId": driveId});
+
+  //         final photoRef = await storage.ref().child("drive/${id}");
+
+  //         UploadTask upload = photoRef.putFile(photo);
+  //         final snapshot = await upload.whenComplete(() {});
+
+  //         String url = await snapshot.ref.getDownloadURL();
+  //         await db.collection("donations").doc(id).update({'drivePhoto': url});
+
+  //         return "Successfully linked donation to donation drive.";
+  //       } on FirebaseException catch (e) {
+  //         return "Failed with error '${e.code}: ${e.message}";
+  //       }
+  //     } else
+  //       return "Cannot complete ${donation['status']} donation!";
+  //   } else {
+  //     return "Donation not found!";
+  //   }
+  // }
+
+  Future<String> completeDonation(String id, String driveId) async {
     QuerySnapshot donations = await db
         .collection("donations")
         .where("id", isEqualTo: id)
@@ -120,14 +157,6 @@ class FirebaseDonationAPI {
               .doc(id)
               .update({"status": "complete", "driveId": driveId});
 
-          final photoRef = await storage.ref().child("drive/${id}");
-
-          UploadTask upload = photoRef.putFile(photo);
-          final snapshot = await upload.whenComplete(() {});
-
-          String url = await snapshot.ref.getDownloadURL();
-          await db.collection("donations").doc(id).update({'drivePhoto': url});
-
           return "Successfully linked donation to donation drive.";
         } on FirebaseException catch (e) {
           return "Failed with error '${e.code}: ${e.message}";
@@ -137,6 +166,21 @@ class FirebaseDonationAPI {
     } else {
       return "Donation not found!";
     }
+  }
+
+  Future<DocumentSnapshot> getDonorById(String donorId) async {
+    return await db.collection('donors').doc(donorId).get();
+  }
+
+  Future<DocumentSnapshot> fetchDonationDetails(String donationId) async {
+    return await db.collection('donations').doc(donationId).get();
+  }
+
+  Stream<QuerySnapshot> getDriveDonations(String driveId) {
+    return db
+        .collection("donations")
+        .where("driveId", isEqualTo: driveId)
+        .snapshots();
   }
 
   // FOR ORGANIZATION ADMIN

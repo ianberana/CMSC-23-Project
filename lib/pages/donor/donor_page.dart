@@ -94,6 +94,26 @@ class _DonorPageState extends State<DonorPage> {
     }
   }
 
+  // void setQrImage(String orgId, String id) {
+  //   setState(() {
+  //     qr = QrImageView(
+  //       data: id,
+  //       size: 200,
+  //       backgroundColor: Colors.white,
+  //     );
+  //   });
+  // }
+
+  // void setQrImage(String orgId, String id) {
+  //   setState(() {
+  //     qr = QrImageView(
+  //       data: id,
+  //       size: 200,
+  //       backgroundColor: Colors.white,
+  //     );
+  //   });
+  // }
+
   Future<void> _pickDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,

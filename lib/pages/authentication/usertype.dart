@@ -14,6 +14,7 @@ import '../../providers/org_provider.dart';
 import '../admin/admin_page.dart';
 import '../donor/donor_page.dart';
 import '../organization/org_page.dart';
+import '../organization/org_qr.dart';
 import 'signin.dart';
 
 class UserType extends StatefulWidget {
@@ -71,7 +72,7 @@ class _UserTypeState extends State<UserType> {
                 } else {
                   final org = context.watch<OrgListProvider>().currentOrg;
                   if (org!.approved) {
-                    return OrganizationPage();
+                    return OrganizationQrPage();
                   } else {
                     return SignInPage();
                   }

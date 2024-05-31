@@ -1,3 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:elbi_donate/models/donation_model.dart';
+import 'package:elbi_donate/models/donor_model.dart';
+import 'package:elbi_donate/pages/organization/org_donationDetails.dart';
+import 'package:elbi_donate/pages/organization/org_donationDrive.dart';
+import 'package:elbi_donate/pages/organization/org_drawer.dart';
+import 'package:elbi_donate/providers/donor_provider.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -11,6 +18,7 @@ import '../../providers/donation_provider.dart';
 import '../../providers/drive_provider.dart';
 import '../../providers/org_provider.dart';
 import 'org_profile.dart';
+import 'org_qr.dart';
 
 class OrganizationPage extends StatefulWidget {
   const OrganizationPage({super.key});
@@ -20,6 +28,36 @@ class OrganizationPage extends StatefulWidget {
 }
 
 class _OrganizationPageState extends State<OrganizationPage> {
+  bool isChecked = false;
+  bool isCancelled = false;
+
+  void toggleCheck(Donation donation) async {
+    if (!isChecked && !isCancelled) {
+      String status =
+          donation.delivery == 'drop off' ? 'confirmed' : 'scheduled';
+
+      setState(() {
+        isChecked = true;
+      });
+
+      await context
+          .read<DonationListProvider>()
+          .confirmDonation(donation.id!, status);
+    }
+  }
+
+  void cancelDonation(Donation donation) async {
+    if (!isCancelled && !isChecked) {
+      setState(() {
+        isCancelled = true;
+      });
+
+      await context
+          .read<DonationListProvider>()
+          .confirmDonation(donation.id!, 'cancelled');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Organization? org = context.watch<OrgListProvider>().currentOrg;
@@ -27,184 +65,185 @@ class _OrganizationPageState extends State<OrganizationPage> {
     //     context.watch<DriveListProvider>().getOrgDrives(org!.id!);
     Stream<QuerySnapshot> donationStream =
         context.watch<DonationListProvider>().getOrgDonations(org!.id!);
+
     return Scaffold(
-      drawer: drawer,
       appBar: AppBar(
-        title: const Text("Organization Page"),
-      ),
-      body: StreamBuilder(
-        stream: donationStream,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Center(
-              child: Text("Error encountered! ${snapshot.error}"),
+        title: Text('Donations',
+            style: TextStyle(color: Colors.white, fontSize: 20)),
+        backgroundColor: Color(0xFF008080),
+        iconTheme: IconThemeData(
+          color: Colors.white, // Change this to the desired color
+      ),),
+      drawer: OrgDrawer(),
+      body: Container(
+        color: Color(0xFF008080),
+        child: StreamBuilder(
+          stream: donationStream,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Center(
+                child: Text("Error encountered! ${snapshot.error}"),
+              );
+            } else if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (!snapshot.hasData) {
+              return const Center(
+                child: Text("No Donations Yet"),
+              );
+            }
+
+            return ListView.builder(
+              itemCount: snapshot.data?.docs.length,
+              itemBuilder: ((context, index) {
+                Donation donation = Donation.fromJson(
+                    snapshot.data?.docs[index].data() as Map<String, dynamic>);
+                donation.id = snapshot.data?.docs[index].id;
+
+                return FutureBuilder<Donor>(
+                    future: context
+                        .read<DonationListProvider>()
+                        .getDonorDetails(donation.donorId),
+                    builder: (context, donorSnapshot) {
+                      if (donorSnapshot.connectionState ==
+                          ConnectionState.waiting) {
+                        return CircularProgressIndicator();
+                      } else if (donorSnapshot.hasError) {
+                        return Text("Error: ${donorSnapshot.error}");
+                      } else if (!donorSnapshot.hasData) {
+                        return Text("Donor not found");
+                      }
+
+                      Donor donor = donorSnapshot.data!;
+
+                      return Dismissible(
+                        key: Key(donation.id.toString()),
+                        child: Card(
+                          margin: EdgeInsets.symmetric(
+                              vertical: 8.0, horizontal: 16),
+                          child: ListTile(
+                            title: Row(
+                              children: [
+                                Flexible(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '${donor.name}',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20.0,
+                                        ),
+                                      ),
+                                      SizedBox(height: 5.0),
+                                      Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.phone_callback,
+                                            size: 16.0,
+                                          ),
+                                          SizedBox(width: 4.0),
+                                          Text('${donor.contact}'),
+                                        ],
+                                      ),
+                                      SizedBox(height: 3.0),
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            Icons.access_time,
+                                            size: 16.0,
+                                          ),
+                                          SizedBox(width: 4.0),
+                                          Text('12-02-2020'),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                IntrinsicWidth(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      if (!isChecked && !isCancelled && donation.status == "pending" )
+                                        ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            foregroundColor: Color(0xFF008080),
+                                            backgroundColor: Color.fromARGB(
+                                                255, 63, 172, 67),
+                                          ),
+                                          onPressed: () =>
+                                              toggleCheck(donation),
+                                          child: Text('Check', style: TextStyle(color: Colors.white)),
+                                        ),
+                                      if (!isChecked && !isCancelled && donation.status == "pending")
+                                        SizedBox(height: 8.0),
+                                      if (!isChecked && !isCancelled && donation.status == "pending")
+                                        ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              foregroundColor: Color.fromARGB(
+                                                  255, 187, 57, 47),
+                                              backgroundColor:
+                                                  const Color.fromARGB(
+                                                      255, 184, 104, 98)),
+                                          onPressed: () =>
+                                              cancelDonation(donation),
+                                          child: Text('Cancel',style: TextStyle(color: Colors.white)),
+                                        ),
+                                      if (isChecked || (!isChecked && donation.status != "pending"))
+                                        ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            foregroundColor: Color(0xFF008080),
+                                            backgroundColor: Color.fromARGB(
+                                                255, 63, 172, 67),
+                                          ),
+                                          onPressed: null,
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text(donation.status),
+                                            ],
+                                          ),
+                                        ),
+                                      if (isCancelled || (!isCancelled && donation.status == "cancelled"))
+                                        ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              foregroundColor: Color.fromARGB(
+                                                  255, 187, 57, 47),
+                                              backgroundColor:
+                                                  const Color.fromARGB(
+                                                      255, 184, 104, 98)),
+                                          onPressed: null,
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text(donation.status), 
+                                            ],
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => OrgDonationDetails(
+                                        donation_: donation)),
+                              );
+                            },
+                          ),
+                        ),
+                      );
+                    });
+              }),
             );
-          } else if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (!snapshot.hasData) {
-            return const Center(
-              child: Text("No Drives Found"),
-            );
-          }
-
-          return ListView.builder(
-            itemCount: snapshot.data?.docs.length,
-            itemBuilder: ((context, index) {
-              Donation donation = Donation.fromJson(
-                  snapshot.data?.docs[index].data() as Map<String, dynamic>);
-              print(donation.orgId);
-              return ListTile(title: Text(donation.orgId));
-              // todo.id = snapshot.data?.docs[index].id;
-              // return Dismissible(
-              //   key: Key(todo.id.toString()),
-              //   onDismissed: (direction) {
-              //     context.read<TodoListProvider>().deleteTodo(todo.title);
-
-              //     ScaffoldMessenger.of(context).showSnackBar(
-              //         SnackBar(content: Text('${todo.title} dismissed')));
-              //   },
-              //   background: Container(
-              //     color: Colors.red,
-              //     child: const Icon(Icons.delete),
-              //   ),
-              //   child: ListTile(
-              //     title: Text(todo.title),
-              //     leading: Checkbox(
-              //       value: todo.completed,
-              //       onChanged: (bool? value) {
-              //         context
-              //             .read<TodoListProvider>()
-              //             .toggleStatus(todo.id!, value!);
-              //       },
-              //     ),
-              //     trailing: Row(
-              //       mainAxisSize: MainAxisSize.min,
-              //       children: [
-              //         IconButton(
-              //           onPressed: () {
-              //             showDialog(
-              //               context: context,
-              //               builder: (BuildContext context) => TodoModal(
-              //                 type: 'Edit',
-              //                 item: todo,
-              //               ),
-              //             );
-              //           },
-              //           icon: const Icon(Icons.create_outlined),
-              //         ),
-              //         IconButton(
-              //           onPressed: () {
-              //             showDialog(
-              //               context: context,
-              //               builder: (BuildContext context) => TodoModal(
-              //                 type: 'Delete',
-              //                 item: todo,
-              //               ),
-              //             );
-              //           },
-              //           icon: const Icon(Icons.delete_outlined),
-              //         )
-              //       ],
-              //     ),
-              //   ),
-              // );
-            }),
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          // showDialog(
-          //   context: context,
-          //   builder: (BuildContext context) => TodoModal(
-          //     type: 'Add',
-          //     item: null,
-          //   ),
-          // );
-
-          // UPDATE DONATION status
-          // await context
-          //     .read<DonationListProvider>()
-          //     .updateStatus("rXoXxDLGvSofgG1IRlH4", "completed");
-
-          // UPDATE ORGANIZATION status
-          // await context
-          //     .read<OrgListProvider>()
-          //     .updateStatus("GCGt6AMZLTHbzlWdWXse", true);
-
-          // CREATE DONATION DRIVE
-          // Drive drive = Drive(
-          //     dateCreated: DateTime.now(),
-          //     name: "Typhoon Aghon",
-          //     description: "Help victims",
-          //     contact: org.contact,
-          //     email: org.email,
-          //     orgId: org.id!);
-          // await context.read<DriveListProvider>().addDrive(drive);
-
-          // // Link DONATION to DONATION DRIVE
-          // File? photo = await pickImageFromGallery();
-
-          // await context.read<DonationListProvider>().confirmDonation(
-          //     "rXoXxDLGvSofgG1IRlH4", "X8SHToo4sH9pJSLkL3AG", photo!);
-
-          // UPDATE DONATION DRIVE
-          // Drive drive = Drive(
-          //     name: "Typhoon Aghon Relief Care",
-          //     description: "Help Typhoon Aghon victims to stand up again.",
-          //     contact: "09000000000",
-          //     email: "legacy@gmail.com");
-          // await context
-          //     .read<DriveListProvider>()
-          //     .editDrive(drive, "X8SHToo4sH9pJSLkL3AG");
-
-          // DELETE DONATION DRIVE
-          // await context
-          //     .read<DriveListProvider>()
-          //     .deleteDrive("1bTkhBGmENhtK6A2eT3u");
-        },
-        child: const Icon(Icons.add_outlined),
+          },
+        ),
       ),
     );
   }
-
-  Future<File?> pickImageFromGallery() async {
-    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-
-    if (image == null) {
-      return null;
-    } else {
-      return File(image.path);
-    }
-  }
-
-  Drawer get drawer => Drawer(
-          child: ListView(padding: EdgeInsets.zero, children: [
-        const DrawerHeader(child: Text("Elbi Donate")),
-        ListTile(
-          title: const Text('Details'),
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const OrganizationProfile()));
-          },
-        ),
-        ListTile(
-          title: const Text('Donate'),
-          onTap: () {
-            // Navigator.pop(context);
-            // Navigator.pushNamed(context, "/");
-          },
-        ),
-        ListTile(
-          title: const Text('Logout'),
-          onTap: () {
-            context.read<UserAuthProvider>().signOut();
-            Navigator.pop(context);
-          },
-        ),
-      ]));
 }
