@@ -10,6 +10,7 @@ class Drive {
   String contact;
   String email;
   String orgId;
+  // DateTime date;
 
   Drive({
     this.id,
@@ -19,18 +20,20 @@ class Drive {
     required this.contact,
     required this.email,
     required this.orgId,
+    // required this.date,
   });
 
   // Factory constructor to instantiate object from json format
   factory Drive.fromJson(Map<String, dynamic> json) {
     return Drive(
       id: json['id'],
-      dateCreated: (json['dateCreated'] as Timestamp).toDate(),
+      dateCreated: (json['dateCreated'] as Timestamp?)?.toDate() ?? DateTime.now(),
       name: json['name'],
       description: json['description'],
       contact: json['contact'],
       email: json['email'],
       orgId: json['orgId'],
+      // date: (json['date'] as Timestamp?)?.toDate() ?? DateTime.now(),
     );
   }
 
@@ -46,7 +49,8 @@ class Drive {
       'description': drive.description,
       'contact': drive.contact,
       'email': drive.email,
-      'orgId': drive.orgId
+      'orgId': drive.orgId,
+      // 'date': Timestamp.fromDate(date),
     };
   }
 }

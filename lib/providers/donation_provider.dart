@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:elbi_donate/models/donor_model.dart';
+import 'package:elbi_donate/models/drive_model.dart';
 import 'package:flutter/material.dart';
 import '../api/firebase_donation_api.dart';
 import '../models/donation_model.dart';
@@ -6,6 +8,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DonationListProvider with ChangeNotifier {
   late FirebaseDonationAPI firebaseService;
+  Donation? _donation;
+  Donor? _donor;
+
+  Donation? get donation => _donation;
+  Donor? get donor => _donor;
 
   DonationListProvider() {
     firebaseService = FirebaseDonationAPI();
@@ -39,10 +46,45 @@ class DonationListProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> completeDonation(String id, String driveId, File photo) async {
-    String message = await firebaseService.completeDonation(id, driveId, photo);
+  // Future<void> completeDonation(String id, String driveId, File photo) async {
+  //   String message = await firebaseService.completeDonation(id, driveId, photo);
+  //   print(message);
+  //   notifyListeners();
+  // }
+
+    Future<void> completeDonation(String id, String driveId) async {
+    String message = await firebaseService.completeDonation(id, driveId);
     print(message);
     notifyListeners();
+  }
+
+  Future<void> fetchDonationDetails(String donationId) async {
+    DocumentSnapshot donationSnapshot =
+        await firebaseService.fetchDonationDetails(donationId);
+    _donation =
+        Donation.fromJson(donationSnapshot.data() as Map<String, dynamic>);
+    notifyListeners();
+  }
+
+  // Method to fetch donor details by donorId
+  Future<void> fetchDonorDetails(String donorId) async {
+    DocumentSnapshot donorSnapshot =
+        await firebaseService.getDonorById(donorId);
+    _donor = Donor.fromJson(donorSnapshot.data() as Map<String, dynamic>);
+    notifyListeners();
+  }
+
+  // Method to fetch donor details by donorId
+  Future<Donor> getDonorDetails(String donorId) async {
+    DocumentSnapshot donorSnapshot =
+        await firebaseService.getDonorById(donorId);
+    return Donor.fromJson(donorSnapshot.data() as Map<String, dynamic>);
+  }
+
+    Stream<QuerySnapshot> getDriveDonations(String driveId) {
+    Stream<QuerySnapshot> donationStream =
+        firebaseService.getDriveDonations(driveId);
+    return donationStream;
   }
 
   // FOR ORGANIZATION/ADMIN
