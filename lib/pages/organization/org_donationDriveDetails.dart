@@ -52,7 +52,8 @@ class OrgDonationDriveDetails extends StatelessWidget {
               child: Text('Link Donation'),
             ),
             DonationList(
-                driveId: drive.id!), // This should be a widget that lists the donations
+                driveId: drive
+                    .id!), // This should be a widget that lists the donations
           ],
         ),
       ),
@@ -90,13 +91,16 @@ class DonationList extends StatelessWidget {
                   Donation.fromJson(doc.data() as Map<String, dynamic>);
               donation.id = doc.id;
 
-              return Card(
-                margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
-                child: ListTile(
-                  title: Text('${donation.id}'),
-                  subtitle: Text('${donation.dateCreated}'),
-                ),
-              );
+              if (donation.status == "confirmed" ||
+                  donation.status == "scheduled") {
+                return Card(
+                  margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
+                  child: ListTile(
+                    title: Text('${donation.id}'),
+                    subtitle: Text('${donation.dateCreated}'),
+                  ),
+                );
+              }
             },
           );
         }
