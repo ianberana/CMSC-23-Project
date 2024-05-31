@@ -23,7 +23,12 @@ class DonationListPage extends StatelessWidget {
     } else {
       donations.forEach((element) {
         Donation donation = Donation.fromJson(element.data() as Map<String, dynamic>);
+        print("donations");
+        print(donation);
         donation.id = element.id!;
+        if (donation.status == "canceled"){
+          return;
+        }
         _donationsListTileWidget.add(
           Padding(
             padding: EdgeInsets.only(bottom: 30, right: 30, left: 30),
@@ -32,7 +37,7 @@ class DonationListPage extends StatelessWidget {
                 Icons.people,
                 size: 20,
               ),
-              title: Text(donation.donorId),
+              title: Text(donation.id!),
               tileColor: Colors.black12,
               trailing: Row(
               mainAxisSize: MainAxisSize.min,
@@ -40,7 +45,7 @@ class DonationListPage extends StatelessWidget {
                 IconButton(
                   icon: const Icon(Icons.cancel),
                   onPressed: () {
-                    context.read<DonationListProvider>().cancelDonation(context.read<UserAuthProvider>().user!.uid);
+                    context.read<DonationListProvider>().cancelDonation(donation.id!);
                   },
                 ),
               ],
@@ -58,7 +63,7 @@ class DonationListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Stream<QuerySnapshot> donationsStream = context.watch<DonationListProvider>().getDonorDonations(context.read<UserAuthProvider>().user!.uid);
+    Stream<QuerySnapshot> donationsStream = context.watch<DonationListProvider>().getDonorDonationsByDonorId(context.read<UserAuthProvider>().user!.uid);
     return Scaffold(
       appBar: AppBar(
         title: Text("Donations List"),

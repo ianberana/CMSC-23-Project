@@ -23,6 +23,17 @@ class DonationListProvider with ChangeNotifier {
     Stream<QuerySnapshot> donationStream =
         firebaseService.getDonorDonations(donorId);
     notifyListeners();
+    print(donationStream);
+    print(donorId);
+    return donationStream;
+  }
+
+  Stream<QuerySnapshot> getDonorDonationsByDonorId(String donorId) {
+    Stream<QuerySnapshot> donationStream =
+    firebaseService.getDonorDonationsByDonorId(donorId);
+    notifyListeners();
+    print(donationStream);
+    print(donorId);
     return donationStream;
   }
 

@@ -43,6 +43,13 @@ class FirebaseDonationAPI {
         .snapshots();
   }
 
+  Stream<QuerySnapshot> getDonorDonationsByDonorId(String donorId) {
+    return db
+        .collection("donations")
+        .where("donorId", isEqualTo: donorId)
+        .snapshots();
+  }
+
   Future<String> cancelDonation(String id) async {
     QuerySnapshot donations = await db
         .collection("donations")
