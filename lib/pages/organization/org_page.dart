@@ -73,7 +73,7 @@ class _OrganizationPageState extends State<OrganizationPage> {
         backgroundColor: Color(0xFF008080),
         iconTheme: IconThemeData(
           color: Colors.white, // Change this to the desired color
-      ),
+      ),),
       drawer: OrgDrawer(),
       body: Container(
         color: Color(0xFF008080),
