@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
@@ -15,7 +16,7 @@ class Donation {
   String status;
   QrImage? qr;
   String donorId;
-  String orgId;
+  String? orgId;
   String? driveId;
   String? drivePhoto;
 
@@ -32,7 +33,7 @@ class Donation {
     this.status = "pending",
     this.qr,
     required this.donorId,
-    required this.orgId,
+    this.orgId,
     this.driveId = "",
     this.drivePhoto = "",
   });
@@ -44,7 +45,7 @@ class Donation {
         dateCreated: (json['dateCreated'] as Timestamp).toDate(),
         item: List<String>.from(json['item']),
         delivery: json['delivery'],
-        weight: json['weight'],
+        weight: json['weight'].toDouble(),
         photo: json['photo'],
         dateDelivery: (json['dateDelivery'] as Timestamp).toDate(),
         address: List<String>.from(json['address']),

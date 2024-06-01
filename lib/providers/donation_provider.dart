@@ -8,14 +8,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DonationListProvider with ChangeNotifier {
   late FirebaseDonationAPI firebaseService;
+  late Stream<QuerySnapshot> donationStream;
   Donation? _donation;
   Donor? _donor;
 
+  Stream<QuerySnapshot> get getAllDonations => donationStream;
   Donation? get donation => _donation;
   Donor? get donor => _donor;
 
   DonationListProvider() {
     firebaseService = FirebaseDonationAPI();
+    setAllDonations();
   }
 
   // FOR DONOR
@@ -63,7 +66,7 @@ class DonationListProvider with ChangeNotifier {
   //   notifyListeners();
   // }
 
-    Future<void> completeDonation(String id, String driveId) async {
+  Future<void> completeDonation(String id, String driveId) async {
     String message = await firebaseService.completeDonation(id, driveId);
     print(message);
     notifyListeners();
@@ -92,16 +95,21 @@ class DonationListProvider with ChangeNotifier {
     return Donor.fromJson(donorSnapshot.data() as Map<String, dynamic>);
   }
 
-    Stream<QuerySnapshot> getDriveDonations(String driveId) {
+  Stream<QuerySnapshot> getDriveDonations(String driveId) {
     Stream<QuerySnapshot> donationStream =
         firebaseService.getDriveDonations(driveId);
     return donationStream;
   }
 
-  // FOR ORGANIZATION/ADMIN
+  // FOR ORGANIZATION
   Stream<QuerySnapshot> getOrgDonations(String orgId) {
     Stream<QuerySnapshot> donationStream =
         firebaseService.getOrgDonations(orgId);
     return donationStream;
+  }
+  
+  //ADMIN
+  void setAllDonations() {
+    donationStream = firebaseService.getAllDonations();
   }
 }

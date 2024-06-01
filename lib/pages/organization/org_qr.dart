@@ -236,10 +236,8 @@ class _OrganizationQrPageState extends State<OrganizationQrPage> {
         ListTile(
           title: const Text('Details'),
           onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const OrganizationProfile()));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => OrganizationProfile()));
           },
         ),
         ListTile(

@@ -7,14 +7,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../models/org_model.dart';
+import '../admin/admin_orgs.dart';
 import '../../providers/donor_provider.dart';
 import '../../providers/user_provider.dart';
 import '../../providers/org_provider.dart';
-import '../admin/admin_page.dart';
 import '../donor/donor_page.dart';
 import '../organization/org_page.dart';
-import '../organization/org_qr.dart';
 import 'signin.dart';
 
 class UserType extends StatefulWidget {
@@ -52,7 +50,7 @@ class _UserTypeState extends State<UserType> {
 
           final user = snapshot.data!.docs.first;
           if (user['type'] == "admin")
-            return AdminPage();
+            return AdminOrganizationsPage();
           else if (user['type'] == "organization") {
             return FutureBuilder(
               future: context.read<OrgListProvider>().setCurrentOrg(user['id']),
@@ -72,7 +70,7 @@ class _UserTypeState extends State<UserType> {
                 } else {
                   final org = context.watch<OrgListProvider>().currentOrg;
                   if (org!.approved) {
-                    return OrganizationQrPage();
+                    return OrganizationPage();
                   } else {
                     return SignInPage();
                   }

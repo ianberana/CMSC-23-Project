@@ -5,6 +5,7 @@ class Organization {
   String? id;
   DateTime dateCreated;
   String name;
+  String? description;
   String address;
   String contact;
   String email;
@@ -16,6 +17,7 @@ class Organization {
     this.id,
     required this.dateCreated,
     required this.name,
+    this.description,
     required this.address,
     required this.contact,
     required this.email,
@@ -30,6 +32,7 @@ class Organization {
       id: json['id'],
       dateCreated: (json['dateCreated'] as Timestamp).toDate(),
       name: json['name'],
+      description: json['description'],
       address: json['address'],
       contact: json['contact'],
       email: json['email'],
@@ -50,6 +53,7 @@ class Organization {
     return {
       'dateCreated': org.dateCreated,
       'name': org.name,
+      'description': org.description,
       'address': org.address,
       'contact': org.contact,
       'email': org.email,
