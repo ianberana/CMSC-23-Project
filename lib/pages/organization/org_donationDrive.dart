@@ -123,7 +123,8 @@ class OrgDonationDrive extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => OrgDonationDriveDetails(drive: drive)),
+                              builder: (context) =>
+                                  OrgDonationDriveDetails(drive: drive)),
                         );
                       },
                     ),

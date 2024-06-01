@@ -6,10 +6,6 @@ class FirebaseDonationAPI {
   static final FirebaseFirestore db = FirebaseFirestore.instance;
   static final FirebaseStorage storage = FirebaseStorage.instance;
 
-  // Stream<QuerySnapshot> getAllDonations() {
-  //   return db.collection("donations").snapshots();
-  // }
-
   // FOR DONORS
   Future<String> addDonation(Map<String, dynamic> donation, File photo) async {
     try {
@@ -176,11 +172,15 @@ class FirebaseDonationAPI {
         .snapshots();
   }
 
-  // FOR ORGANIZATION ADMIN
   Stream<QuerySnapshot> getOrgDonations(String orgId) {
     return db
         .collection("donations")
         .where("orgId", isEqualTo: orgId)
         .snapshots();
+  }
+
+  // FOR ADMIN
+  Stream<QuerySnapshot> getAllDonations() {
+    return db.collection("donations").snapshots();
   }
 }

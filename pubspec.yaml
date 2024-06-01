@@ -45,6 +45,7 @@ dependencies:
   qr_flutter: ^4.1.0
   firebase_storage: ^11.7.6
   qr_code_scanner: ^1.0.1
+  syncfusion_flutter_pdfviewer: ^24.2.8
 
 dev_dependencies:
   flutter_test:
