@@ -1,3 +1,4 @@
+import 'package:elbi_donate/pages/donor/donor_drawer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +17,7 @@ class _DonorProfileState extends State<DonorProfile> {
   Widget build(BuildContext context) {
     user = context.read<UserAuthProvider>().user;
     return Scaffold(
+        drawer: DonorDrawer(),
         appBar: AppBar(
           title: const Text("Details"),
         ),

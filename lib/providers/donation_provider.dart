@@ -22,17 +22,28 @@ class DonationListProvider with ChangeNotifier {
   }
 
   // FOR DONOR
-  Future<String> addDonation(Donation donation, File photo) async {
-    String id =
-        await firebaseService.addDonation(donation.toJson(donation), photo);
+  Future<void> addDonation(Donation donation) async {
+    String message =
+        await firebaseService.addDonation(donation.toJson(donation));
+    print(message);
     notifyListeners();
-    return id;
   }
 
   Stream<QuerySnapshot> getDonorDonations(String donorId) {
     Stream<QuerySnapshot> donationStream =
         firebaseService.getDonorDonations(donorId);
     notifyListeners();
+    print(donationStream);
+    print(donorId);
+    return donationStream;
+  }
+
+  Stream<QuerySnapshot> getDonorDonationsByDonorId(String donorId) {
+    Stream<QuerySnapshot> donationStream =
+    firebaseService.getDonorDonationsByDonorId(donorId);
+    notifyListeners();
+    print(donationStream);
+    print(donorId);
     return donationStream;
   }
 
@@ -96,7 +107,7 @@ class DonationListProvider with ChangeNotifier {
         firebaseService.getOrgDonations(orgId);
     return donationStream;
   }
-
+  
   //ADMIN
   void setAllDonations() {
     donationStream = firebaseService.getAllDonations();

@@ -1,18 +1,18 @@
-// import 'package:cloud_firestore/cloud_firestore.dart';
-import 'dart:io';
+import 'package:elbi_donate/providers/auth_provider.dart';
+import 'package:elbi_donate/providers/donation_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:qr_flutter/qr_flutter.dart';
-import '../../models/donor_model.dart';
+//import 'package:intl/intl_standalone.dart';
+//import '../../providers/auth_provider.dart';
 import '../../models/donation_model.dart';
-import '../../providers/auth_provider.dart';
-import '../../providers/donation_provider.dart';
-import '../../providers/donor_provider.dart';
-import 'donor_profile.dart';
+import 'donor_drawer.dart';
 
 class DonorPage extends StatefulWidget {
-  const DonorPage({super.key});
+  const DonorPage({Key? key}) : super(key: key);
 
   @override
   State<DonorPage> createState() => _DonorPageState();
@@ -20,128 +20,54 @@ class DonorPage extends StatefulWidget {
 
 class _DonorPageState extends State<DonorPage> {
   File? photo;
-  QrImageView? qr;
+  DateTime? selectedDate;
+  TimeOfDay? selectedTime;
+  User? user;
+
+  final deliveryController = TextEditingController();
+  final weightController = TextEditingController();
+  final dateController = TextEditingController();
+  final timeController = TextEditingController();
+  final addressController = TextEditingController();
+  final contactController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    Donor? donor = context.watch<DonorListProvider>().currentDonor;
-    // Stream<QuerySnapshot> todosStream = context.watch<TodoListProvider>().todo;
+    user = context.read<UserAuthProvider>().user;
     return Scaffold(
-      drawer: drawer,
+      drawer: DonorDrawer(),
       appBar: AppBar(
         title: const Text("Donors Page"),
+        backgroundColor: Color(0xFF008080),
       ),
-      body: Container(child: qr != null ? qr as Widget : Text("No qr")),
-      // ),
-      // StreamBuilder(
-      //   stream: todosStream,
-      //   builder: (context, snapshot) {
-      //     if (snapshot.hasError) {
-      //       return Center(
-      //         child: Text("Error encountered! ${snapshot.error}"),
-      //       );
-      //     } else if (snapshot.connectionState == ConnectionState.waiting) {
-      //       return const Center(
-      //         child: CircularProgressIndicator(),
-      //       );
-      //     } else if (!snapshot.hasData) {
-      //       return const Center(
-      //         child: Text("No Todos Found"),
-      //       );
-      //     }
-
-      //     return ListView.builder(
-      //       itemCount: snapshot.data?.docs.length,
-      //       itemBuilder: ((context, index) {
-      //         Todo todo = Todo.fromJson(
-      //             snapshot.data?.docs[index].data() as Map<String, dynamic>);
-      //         todo.id = snapshot.data?.docs[index].id;
-      //         return Dismissible(
-      //           key: Key(todo.id.toString()),
-      //           onDismissed: (direction) {
-      //             context.read<TodoListProvider>().deleteTodo(todo.title);
-
-      //             ScaffoldMessenger.of(context).showSnackBar(
-      //                 SnackBar(content: Text('${todo.title} dismissed')));
-      //           },
-      //           background: Container(
-      //             color: Colors.red,
-      //             child: const Icon(Icons.delete),
-      //           ),
-      //           child: ListTile(
-      //             title: Text(todo.title),
-      //             leading: Checkbox(
-      //               value: todo.completed,
-      //               onChanged: (bool? value) {
-      //                 context
-      //                     .read<TodoListProvider>()
-      //                     .toggleStatus(todo.id!, value!);
-      //               },
-      //             ),
-      //             trailing: Row(
-      //               mainAxisSize: MainAxisSize.min,
-      //               children: [
-      //                 IconButton(
-      //                   onPressed: () {
-      //                     showDialog(
-      //                       context: context,
-      //                       builder: (BuildContext context) => TodoModal(
-      //                         type: 'Edit',
-      //                         item: todo,
-      //                       ),
-      //                     );
-      //                   },
-      //                   icon: const Icon(Icons.create_outlined),
-      //                 ),
-      //                 IconButton(
-      //                   onPressed: () {
-      //                     showDialog(
-      //                       context: context,
-      //                       builder: (BuildContext context) => TodoModal(
-      //                         type: 'Delete',
-      //                         item: todo,
-      //                       ),
-      //                     );
-      //                   },
-      //                   icon: const Icon(Icons.delete_outlined),
-      //                 )
-      //               ],
-      //             ),
-      //           ),
-      //         );
-      //       }),
-      //     );
-      //   },
-      // ),
+      body: ListView(
+        children: [
+          ListTile(
+            title: Text("Red Cross Youth of UPLB"),
+            subtitle: Text(
+                "The Red Cross Youth of University of the Philippines Los Banos is a non profit, mass based, student civic organization that aims to uphold humanity as one of its principles."),
+            onTap: () {
+              _showDonateDialog(context);
+            },
+          ),
+          ListTile(
+            title: Text("Umalohokan, Inc."),
+            subtitle: Text(
+                "Umalohokan, Inc. is a socio-cultural organization founded on December 21, 1977 in the University of the Philippines-Los Baños, at the height of the 1972 Martial Law."),
+            onTap: () {
+              _showDonateDialog(context);
+            },
+          ),
+          // Add more ListTile widgets for additional organizations
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          // showDialog(
-          //   context: context,
-          //   builder: (BuildContext context) => TodoModal(
-          //     type: 'Add',
-          //     item: null,
-          //   ),
-          // );
-
           // Add static donation
-          File? photo = await pickImageFromCamera();
-
-          Donation donation = Donation(
-            dateCreated: DateTime.now(),
-            item: ["food"],
-            delivery: "pickup",
-            weight: 20,
-            dateDelivery: DateTime.now(),
-            address: ["Los Banos, Laguna"],
-            contact: "09123456789",
-            donorId: donor!.id!,
-            orgId: "7VI3RQEfEkEeBrJtzMZM",
-          );
-          String id = await context
-              .read<DonationListProvider>()
-              .addDonation(donation, photo!);
-
-          setQrImage("7VI3RQEfEkEeBrJtzMZM", id);
+          File? photo = await pickImageFromGallery();
+          setState(() {
+            this.photo = photo;
+          });
         },
         child: const Icon(Icons.add_outlined),
       ),
@@ -168,39 +94,212 @@ class _DonorPageState extends State<DonorPage> {
     }
   }
 
-  void setQrImage(String orgId, String id) {
-    setState(() {
-      qr = QrImageView(
-        data: id,
-        size: 200,
-        backgroundColor: Colors.white,
-      );
-    });
+  // void setQrImage(String orgId, String id) {
+  //   setState(() {
+  //     qr = QrImageView(
+  //       data: id,
+  //       size: 200,
+  //       backgroundColor: Colors.white,
+  //     );
+  //   });
+  // }
+
+  // void setQrImage(String orgId, String id) {
+  //   setState(() {
+  //     qr = QrImageView(
+  //       data: id,
+  //       size: 200,
+  //       backgroundColor: Colors.white,
+  //     );
+  //   });
+  // }
+
+  Future<void> _pickDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate ?? DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+        dateController.text = DateFormat('yyyy-MM-dd').format(picked);
+      });
+    }
   }
 
-  Drawer get drawer => Drawer(
-          child: ListView(padding: EdgeInsets.zero, children: [
-        const DrawerHeader(child: Text("Elbi Donate")),
-        ListTile(
-          title: const Text('Details'),
-          onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const DonorProfile()));
+  Future<void> _pickTime(BuildContext context) async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: selectedTime ?? TimeOfDay.now(),
+    );
+    if (picked != null && picked != selectedTime) {
+      setState(() {
+        selectedTime = picked;
+        timeController.text = picked.format(context);
+      });
+    }
+  }
+
+  void _showDonateDialog(BuildContext context) {
+    // Define the available donation items
+    List<String> donationItems = ["Food", "Clothes", "Cash"];
+
+    // Initialize a list to hold the selected items
+    List<String> selectedItems = [];
+
+    File? selectedPhoto;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        Future<void> pickImage() async {
+          final image =
+              await ImagePicker().pickImage(source: ImageSource.gallery);
+          if (image != null) {
+            setState(() {
+              selectedPhoto = File(image.path);
+            });
+          }
+        }
+
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+              title: Text("Donate to Organization"),
+              content: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Checkbox group for donation items
+                    for (String item in donationItems)
+                      CheckboxListTile(
+                        title: Text(item),
+                        value: selectedItems.contains(item),
+                        onChanged: (bool? value) {
+                          setState(() {
+                            if (value != null && value) {
+                              // If checkbox is checked, add item to selectedItems
+                              selectedItems.add(item);
+                            } else {
+                              // If checkbox is unchecked, remove item from selectedItems
+                              selectedItems.remove(item);
+                            }
+                          });
+                        },
+                      ),
+                    SizedBox(height: 10),
+                    TextFormField(
+                      controller: deliveryController,
+                      decoration:
+                          InputDecoration(labelText: "Pickup or Drop off"),
+                    ),
+                    SizedBox(height: 10),
+                    TextFormField(
+                      controller: weightController,
+                      decoration:
+                          InputDecoration(labelText: "Weight of donation (kg)"),
+                      keyboardType: TextInputType.number,
+                    ),
+                    SizedBox(height: 10),
+                    TextFormField(
+                      controller: dateController,
+                      readOnly: true,
+                      decoration: InputDecoration(
+                        hintText: 'Enter Date',
+                        labelText: 'Enter Date',
+                      ),
+                      onTap: () async {
+                        await _pickDate(context);
+                      },
+                    ),
+                    TextFormField(
+                      controller: timeController,
+                      readOnly: true,
+                      decoration: InputDecoration(
+                        hintText: 'Enter Time',
+                        labelText: 'Enter Time',
+                      ),
+                      onTap: () async {
+                        await _pickTime(context);
+                      },
+                    ),
+                    SizedBox(height: 20),
+                    TextFormField(
+                      controller: addressController,
+                      decoration: InputDecoration(
+                          labelText: "Address (for pickup option only)"),
+                    ),
+                    SizedBox(height: 20),
+                    TextFormField(
+                      controller: contactController,
+                      decoration: InputDecoration(
+                          labelText: "Contact Number (for pickup option only)"),
+                      keyboardType: TextInputType.number,
+                    ),
+                    SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: pickImage,
+                      child: Text("Upload Photo"),
+                    ),
+                    if (selectedPhoto != null) ...[
+                      SizedBox(height: 10),
+                      Image.file(selectedPhoto!),
+                    ],
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text("Cancel"),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    DateTime? deliveryDateTime;
+                    if (selectedDate != null && selectedTime != null) {
+                      deliveryDateTime = DateTime(
+                        selectedDate!.year,
+                        selectedDate!.month,
+                        selectedDate!.day,
+                        selectedTime!.hour,
+                        selectedTime!.minute,
+                      );
+                    }
+
+                    Donation donation = Donation(
+                      dateCreated: DateTime.now(),
+                      item: selectedItems,
+                      delivery: deliveryController.text,
+                      weight: double.parse(weightController.text),
+                      dateDelivery: deliveryDateTime ?? DateTime.now(),
+                      address: [addressController.text],
+                      contact: contactController.text,
+                      donorId: user!.uid,
+                      orgId: '',
+                      photo: "",
+                    );
+
+                    print("huhhh");
+
+                    // Add the donation to your provider
+                    await context
+                        .read<DonationListProvider>()
+                        .addDonation(donation);
+                    // Close the dialog
+                    Navigator.pop(context);
+                  },
+                  child: Text("Submit"),
+                ),
+              ],
+            );
           },
-        ),
-        ListTile(
-          title: const Text('Donate'),
-          onTap: () {
-            // Navigator.pop(context);
-            // Navigator.pushNamed(context, "/");
-          },
-        ),
-        ListTile(
-          title: const Text('Logout'),
-          onTap: () {
-            context.read<UserAuthProvider>().signOut();
-            Navigator.pop(context);
-          },
-        ),
-      ]));
+        );
+      },
+    );
+  }
 }

@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+//import 'package:qr_code_scanner/qr_code_scanner.dart';
 import '../../models/donation_model.dart';
 import '../../models/drive_model.dart';
 import '../../models/org_model.dart';
@@ -23,7 +23,7 @@ class OrganizationQrPage extends StatefulWidget {
 class _OrganizationQrPageState extends State<OrganizationQrPage> {
   final qrKey = GlobalKey(debugLabel: 'QR');
 
-  QRViewController? controller;
+  //QRViewController? controller;
   Barcode? info;
 
   @override
