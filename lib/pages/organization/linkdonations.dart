@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:elbi_donate/models/donation_model.dart';
 import 'package:elbi_donate/models/donor_model.dart';
 import 'package:elbi_donate/models/drive_model.dart';
@@ -5,13 +7,26 @@ import 'package:elbi_donate/models/org_model.dart';
 import 'package:elbi_donate/providers/donation_provider.dart';
 import 'package:elbi_donate/providers/org_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'org_donationDetails.dart';
+
 class LinkDonationsPage extends StatelessWidget {
-  final Drive driveItem; 
+  final Drive driveItem;
 
   LinkDonationsPage({required this.driveItem});
+
+  Future<File?> pickImageFromGallery() async {
+    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    if (image == null) {
+      return null;
+    } else {
+      return File(image.path);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +49,6 @@ class LinkDonationsPage extends StatelessWidget {
           } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return Center(child: Text('No confirmed donations found'));
           } else {
-
             return ListView.builder(
               itemCount: snapshot.data?.docs.length,
               itemBuilder: (context, index) {
@@ -61,7 +75,6 @@ class LinkDonationsPage extends StatelessWidget {
                       Donor donor = donorSnapshot.data!;
 
                       return Card(
-                        color: Color(0xFF008080),
                         margin:
                             EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
                         child: ListTile(
@@ -105,27 +118,32 @@ class LinkDonationsPage extends StatelessWidget {
                               ),
                               ElevatedButton(
                                 onPressed: () async {
+                                  File? photo = await pickImageFromGallery();
                                   await context
                                       .read<DonationListProvider>()
-                                      .completeDonation(donation.id!, driveItem.id!);
+                                      .completeDonation(
+                                          donation.id!, driveItem.id!, photo!);
                                   Navigator.pop(context);
                                 },
                                 child: Text('Link'),
                               ),
                             ],
                           ),
-                          // onTap: () {
-                          //   Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //       builder: (context) => OrgDonationDetails(donation_: donation),
-                          //     ),
-                          //   );
-                          // },
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    OrgDonationDetails(donation_: donation),
+                              ),
+                            );
+                          },
                         ),
                       );
                     },
                   );
+                } else {
+                  return SizedBox(height: 8);
                 }
               },
             );

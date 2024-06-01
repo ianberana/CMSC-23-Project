@@ -336,9 +336,9 @@ class _SignUpState extends State<SignUpPage> {
         padding: const EdgeInsets.only(top: 30),
         child: ElevatedButton(
             style: ButtonStyle(
-                padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
+                padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
                     EdgeInsets.all(18)),
-                backgroundColor: WidgetStateProperty.all<Color>(
+                backgroundColor: MaterialStateProperty.all<Color>(
                     Color.fromARGB(255, 52, 199, 59))),
             onPressed: () async {
               if (_formKey.currentState!.validate() &&

@@ -14,7 +14,6 @@ class Donation {
   List address;
   String contact;
   String status;
-  QrImage? qr;
   String donorId;
   String? orgId;
   String? driveId;
@@ -31,7 +30,6 @@ class Donation {
     required this.address,
     required this.contact,
     this.status = "pending",
-    this.qr,
     required this.donorId,
     this.orgId,
     this.driveId = "",
@@ -51,7 +49,6 @@ class Donation {
         address: List<String>.from(json['address']),
         contact: json['contact'],
         status: json['status'],
-        qr: json['qr'],
         donorId: json['donorId'],
         orgId: json['orgId'],
         driveId: json['driveId'],
@@ -74,13 +71,10 @@ class Donation {
       'address': donation.address,
       'contact': donation.contact,
       'status': donation.status,
-      'qr': donation.qr,
       'donorId': donation.donorId,
       'orgId': donation.orgId,
       'driveId': donation.driveId,
       'drivePhoto': donation.drivePhoto,
-      'driveId': donation.driveId,
-      'drivePhoto': donation.drivePhoto
     };
   }
 }

@@ -40,7 +40,7 @@ class DonationListProvider with ChangeNotifier {
 
   Stream<QuerySnapshot> getDonorDonationsByDonorId(String donorId) {
     Stream<QuerySnapshot> donationStream =
-    firebaseService.getDonorDonationsByDonorId(donorId);
+        firebaseService.getDonorDonationsByDonorId(donorId);
     notifyListeners();
     print(donationStream);
     print(donorId);
@@ -60,17 +60,17 @@ class DonationListProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // Future<void> completeDonation(String id, String driveId, File photo) async {
-  //   String message = await firebaseService.completeDonation(id, driveId, photo);
-  //   print(message);
-  //   notifyListeners();
-  // }
-
-  Future<void> completeDonation(String id, String driveId) async {
-    String message = await firebaseService.completeDonation(id, driveId);
+  Future<void> completeDonation(String id, String driveId, File photo) async {
+    String message = await firebaseService.completeDonation(id, driveId, photo);
     print(message);
     notifyListeners();
   }
+
+  // Future<void> completeDonation(String id, String driveId) async {
+  //   String message = await firebaseService.completeDonation(id, driveId);
+  //   print(message);
+  //   notifyListeners();
+  // }
 
   Future<void> fetchDonationDetails(String donationId) async {
     DocumentSnapshot donationSnapshot =
@@ -107,7 +107,7 @@ class DonationListProvider with ChangeNotifier {
         firebaseService.getOrgDonations(orgId);
     return donationStream;
   }
-  
+
   //ADMIN
   void setAllDonations() {
     donationStream = firebaseService.getAllDonations();
