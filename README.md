@@ -11,6 +11,11 @@ Elbi Donation App
 ## Things you did in the code
 
 - User Authentication
+- Sign Up Page
+- Login Page
+- Donors Page
+- Organizations Page
+  
 
 <!-- ## Challenges encountered
 
